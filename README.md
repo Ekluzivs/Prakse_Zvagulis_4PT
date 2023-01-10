@@ -1,6 +1,6 @@
 # Prakses darbi
 
-## IP adreses
+## IP adrese
 
 koda darbība:
 1. Kods atver teksta failus kas pārraksta viņus, rezultātā teksta fails ir bez neviena ieraksta
