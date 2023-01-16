@@ -9,7 +9,7 @@ log=url.text
 #atradiis visus IP adreses no log majaslapas, izmantojot re.findall
 #[^/] tiek izmantots lai nonemtu kuri ir log faila, bet nav ip adreses
 def getallip(log):
-    return re.findall(r'\b[^/]\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b',log)
+    return re.findall(r'\b[^/ : v]\d[0-9]{1,3}\.\d[0-9]{1,3}\.\d[0-9]{1,3}\.\d[0-9]{1,3}\b',log)
 #atver teksta failu un printes visas atrastas ip adreses no getallip(log) funkcijas
 with open('visas_IP_adreses.txt', 'w') as ip:
     for i in getallip(log):
@@ -18,7 +18,7 @@ ip.close()
 
 #funkcija, kas parbaudis teskta unikalas adreses
 def unikip(log):
-    rez=re.findall(r'\b[^/]\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b',log)
+    rez=re.findall(r'\b[^/ : v]\d[0-9]{1,3}\.\d[0-9]{1,3}\.\d[0-9]{1,3}\.\d[0-9]{1,3}\b',log)
     return set(rez)
 #printes ara rezultatus bet ar unikalam ip adresem
 with open('unikalas_IP_adreses.txt', 'w') as uip:
