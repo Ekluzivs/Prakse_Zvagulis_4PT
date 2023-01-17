@@ -6,4 +6,5 @@ Savāc IP adreses no mājaslapas, vienā funkcijā savāc visas IP adreses, otr�
 
 ## IP valsts
 
-Lasa unikālās IP adreses no pirmā uzdevuma, izprintējot tās valsts un IP adresi, kā arī atlasot visas IP adreses kas nāk no ASV 
+Lasa unikālās IP adreses no pirmā uzdevuma, izdrukājot to IP un valsti, kā arī izdrukā to konkrēto valsts IP adresi
+* uzd2_5: process ir tas, bet ar subprocess pielietojumu, rezultāts ir salasāmāks
