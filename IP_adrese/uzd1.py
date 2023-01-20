@@ -4,8 +4,8 @@ import re
 open('visas_IP_adreses.txt','w').close()
 open('unikalas_IP_adreses.txt','w').close()
 #requestot majaslapu
-url=r.get('http://www.inees.org/fileadmin/inees.org/files/logs/access.log.1')
-log=url.text
+url=open('access.log','r')
+log=url.read()
 #atradiis visus IP adreses no log majaslapas, izmantojot re.findall
 #[^/] tiek izmantots lai nonemtu kuri ir log faila, bet nav ip adreses
 def getallip(log):
