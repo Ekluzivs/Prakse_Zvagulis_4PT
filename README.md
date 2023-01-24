@@ -7,7 +7,7 @@ Savāc IP adreses no mājaslapas, vienā funkcijā savāc visas IP adreses, otr�
 ## IP valsts
 
 Lasa unikālās IP adreses no pirmā uzdevuma, izdrukājot to IP un valsti, kā arī izdrukā to konkrēto valsts IP adresi
-* uzd2_5: process ir tas, bet ar subprocess pielietojumu, rezultāts ir salasāmāks
+* uzd2_5: process ir līdzīgs, bet ar subprocess pielietojumu, rezultāts ir salasāmāks
 
 ## Bash uzdevumi - uzd 3
 
