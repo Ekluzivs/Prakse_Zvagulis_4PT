@@ -16,8 +16,11 @@ sort -u vis_ip_adr.txt > uniq_ip_adr.txt
 echo "notiek IP meklesana"
 for ip in `cat uniq_ip_adr.txt`
 do
-echo "$ip" >> LV_IP.txt
-whois $ip | grep -o LV >> LV_IP.txt
+#izmantojot awk palīdzību, tiks atrasts specifisks valsts, izprintējot IP adresi teksta failā no tās valsts
+valsts=$(whois $ip | grep -i country | awk '{if(NF>0)print $NF}')
+if [ "$valsts" == "LV" ]; then
+echo $ip >> LV_IP.txt
+fi
 done
 # Notiek Epastu meklēšana, izmantojot līdzīgu metodi, atrod IP, atrod kur ir abuse līnijā, tad atrod E pasta adresi no tās līnijas, kas tiks izprintēts
 # Tiek izprintēti ja satur vairākas IP adreses
