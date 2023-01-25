@@ -34,7 +34,12 @@ done
 echo "notiek epastu meklesana un drukasana"
 for daudz in `cat uniq_ip_adr.txt`
 do
+#process ir tas pats, ņemts no IP valsts meklētāja
+whotest=`whois $daudz 2>/dev/null`
+meh=$?
+if [ $meh -eq 0 ]; then
 echo "$daudz" >> kontakti.txt
 whois $daudz | grep -E -i abuse | grep -E -o "\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b" >> kontakti.txt
 echo "----" >> kontakti.txt
+fi
 done
