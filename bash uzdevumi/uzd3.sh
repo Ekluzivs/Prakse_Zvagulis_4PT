@@ -16,6 +16,7 @@ sort -u vis_ip_adr.txt > uniq_ip_adr.txt
 > kontakti.txt
 #notiek IP adrešu valsts meklēšana, ja ir Latvija, tad tiks izprintēts IP adrese kas ir no Latvijas 
 echo "notiek IP meklesana"
+count=0
 for ip in `cat uniq_ip_adr.txt`
 do
 # Kods, kurā tiks pārmests caur /dev/null, neizveidojot papildus rezultātu ja komandu rinda nokļūdas
@@ -29,6 +30,7 @@ whois $ip > whois.out
 #izmantojot awk palīdzību, tiks atrasts specifisks valsts, izprintējot IP adresi teksta failā no tās valsts
 valsts=$(cat whois.out | grep -i country | awk '{if(NF>0)print $NF}')
 if [ "$valsts" == "LV" ]; then
+let "count+=1"
 echo $ip >> LV_IP.txt
 # Tiek veikta epastu pārbaude, sākumā meklējot kur ir abuse, tad epastu, kurā tad printē teksta failā
 echo "$ip" >> kontakti.txt
@@ -37,3 +39,4 @@ echo "----" >> kontakti.txt
 fi
 fi
 done
+echo "To valsts IP adreses: $count"
