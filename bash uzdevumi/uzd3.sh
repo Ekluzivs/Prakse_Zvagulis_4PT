@@ -21,21 +21,18 @@ do
 # Kods, kurā tiks pārmests caur /dev/null, neizveidojot papildus rezultātu ja komandu rinda nokļūdas
 #tad izveido meh=$? mainīgo
 # kurā tad if statement, pārbauda vai mainīgais meh ir 0, ja ir, tad tas turpina ciklu 
-    #mēģinot ielikt `whois $ip` mainīgajā veido printēšanas kļūdu, siera bloka tekstu no tā IP adrešu informācijas izmantojot whois
-    #izmantojot `whois $ip` atsevišķi veido smuku rezultātu skatoties pēc `set -x`
-  #whotest=`whois $ip 2>/dev/null`
-  #meh=$?
-  #if [ $meh -eq 0 ]; then
-  #whout=$(whois $ip)
+whotest=`whois $ip 2>/dev/null`
+meh=$?
+if [ $meh -eq 0 ]; the
+#Neieliekot mainīgajā, bet rakstot iekšā "failā", vari izvilkt rezultātu izmantojot cat, lai izlasa whois.out failu
+whois $ip > whois.out
 #izmantojot awk palīdzību, tiks atrasts specifisks valsts, izprintējot IP adresi teksta failā no tās valsts
-         #$whout
-valsts=$(whois $ip | grep -i country | awk '{if(NF>0)print $NF}')
+valsts=$(cat whois.out | grep -i country | awk '{if(NF>0)print $NF}')
 if [ "$valsts" == "LV" ]; then
 echo $ip >> LV_IP.txt
 # Tiek veikta epastu pārbaude, sākumā meklējot kur ir abuse, tad epastu, kurā tad printē teksta failā
-echo "$daudz" >> kontakti.txt
-#$whout
-whois $daudz | grep -E -i abuse | grep -E -o "\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b" >> kontakti.txt
+echo "$ip" >> kontakti.txt
+cat whois.out | grep -E -i abuse | grep -E -o "\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b" >> kontakti.txt
 echo "----" >> kontakti.txt
 fi
 fi
