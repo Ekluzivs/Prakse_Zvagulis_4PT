@@ -1,4 +1,6 @@
 #!/bin/bash
+#debug
+  #set -x
 #izveido teksta failus
 touch vis_ip_adr.txt
 touch uniq_ip_adr.txt
@@ -18,28 +20,23 @@ for ip in `cat uniq_ip_adr.txt`
 do
 # Kods, kurā tiks pārmests caur /dev/null, neizveidojot papildus rezultātu ja komandu rinda nokļūdas
 #tad izveido meh=$? mainīgo
-# kurā tad if statement, pārbauda vai mainīgais meh ir 0, ja ir, tad tas turpina ciklu
-whotest=`whois $ip 2>/dev/null`
-meh=$?
-if [ $meh -eq 0 ]; then
+# kurā tad if statement, pārbauda vai mainīgais meh ir 0, ja ir, tad tas turpina ciklu 
+    #mēģinot ielikt `whois $ip` mainīgajā veido printēšanas kļūdu, siera bloka tekstu no tā IP adrešu informācijas izmantojot whois
+    #izmantojot `whois $ip` atsevišķi veido smuku rezultātu skatoties pēc `set -x`
+  #whotest=`whois $ip 2>/dev/null`
+  #meh=$?
+  #if [ $meh -eq 0 ]; then
+  #whout=$(whois $ip)
 #izmantojot awk palīdzību, tiks atrasts specifisks valsts, izprintējot IP adresi teksta failā no tās valsts
+         #$whout
 valsts=$(whois $ip | grep -i country | awk '{if(NF>0)print $NF}')
 if [ "$valsts" == "LV" ]; then
 echo $ip >> LV_IP.txt
-fi
-fi
-done
-# Notiek Epastu meklēšana, izmantojot līdzīgu metodi, atrod IP, atrod kur ir abuse līnijā, tad atrod E pasta adresi no tās līnijas, kas tiks izprintēts
-# Tiek izprintēti ja satur vairākas IP adreses
-echo "notiek epastu meklesana un drukasana"
-for daudz in `cat uniq_ip_adr.txt`
-do
-#process ir tas pats, ņemts no IP valsts meklētāja
-whotest=`whois $daudz 2>/dev/null`
-meh=$?
-if [ $meh -eq 0 ]; then
+# Tiek veikta epastu pārbaude, sākumā meklējot kur ir abuse, tad epastu, kurā tad printē teksta failā
 echo "$daudz" >> kontakti.txt
+#$whout
 whois $daudz | grep -E -i abuse | grep -E -o "\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b" >> kontakti.txt
 echo "----" >> kontakti.txt
+fi
 fi
 done
