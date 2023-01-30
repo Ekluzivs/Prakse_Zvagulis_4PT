@@ -22,11 +22,16 @@ do
 # Kods, kurā tiks pārmests caur /dev/null, neizveidojot papildus rezultātu ja komandu rinda nokļūdas
 #tad izveido meh=$? mainīgo
 # kurā tad if statement, pārbauda vai mainīgais meh ir 0, ja ir, tad tas turpina ciklu 
-whotest=`whois $ip 2>/dev/null`
-meh=$?
-if [ $meh -eq 0 ]; then
 #Neieliekot mainīgajā, bet rakstot iekšā "failā", vari izvilkt rezultātu izmantojot cat, lai izlasa whois.out failu
 whois $ip > whois.out
+whotest=$(cat whois.out 2>/dev/null)
+meh=$?
+
+# bija mēģināts 10 dažādos veidos, šis pēdējais:
+#if ! [[ $(cat whois.out | grep -E -i connect) ]]; then
+#, taču tas tik un tā laida IP adreses uz LV_IP.txt
+
+if [ $meh -eq 0 ]; then
 #izmantojot awk palīdzību, tiks atrasts specifisks valsts, izprintējot IP adresi teksta failā no tās valsts
 valsts=$(cat whois.out | grep -i country | awk '{if(NF>0)print $NF}')
 if [ "$valsts" == "LV" ]; then
