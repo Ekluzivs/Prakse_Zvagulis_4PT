@@ -24,7 +24,7 @@ do
 # kurā tad if statement, pārbauda vai mainīgais meh ir 0, ja ir, tad tas turpina ciklu 
 whotest=`whois $ip 2>/dev/null`
 meh=$?
-if [ $meh -eq 0 ]; the
+if [ $meh -eq 0 ]; then
 #Neieliekot mainīgajā, bet rakstot iekšā "failā", vari izvilkt rezultātu izmantojot cat, lai izlasa whois.out failu
 whois $ip > whois.out
 #izmantojot awk palīdzību, tiks atrasts specifisks valsts, izprintējot IP adresi teksta failā no tās valsts
