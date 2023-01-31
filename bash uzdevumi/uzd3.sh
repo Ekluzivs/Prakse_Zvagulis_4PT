@@ -33,8 +33,10 @@ meh=$?
 
 if [ $meh -eq 0 ]; then
 #izmantojot awk palīdzību, tiks atrasts specifisks valsts, izprintējot IP adresi teksta failā no tās valsts
-valsts=$(cat whois.out | grep -i country | awk '{if(NF>0)print $NF}')
-if [ "$valsts" == "LV" ]; then
+# NF ņem no pēdējā ieraksta, kurā pēc tam pārbauda vai tas ir LV, ja ir, tad if statement pārbauda vai %valsts nav tukšs, ja nav tad ir true
+# ja ir tukšs tad ir false, cikls atkārtojas
+valsts=$(cat whois.out | grep -i country | awk '{if(NF>0 && $NF=="LV")print $NF}')
+if [[ -n "$valsts" ]]; then
 let "count+=1"
 echo $ip >> LV_IP.txt
 # Tiek veikta epastu pārbaude, sākumā meklējot kur ir abuse, tad epastu, kurā tad printē teksta failā
