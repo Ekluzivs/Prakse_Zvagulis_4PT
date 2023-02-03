@@ -1,0 +1,11 @@
+{% extends "lajouts.html" %}
+{% block body %}
+        <h1>IP lookup</h1>
+        <form method=post>
+                <dl>
+                        <dt>IP adrese:
+                        <dd><input type=text name=IP value="{{ request.form.IP }}">
+                </dl>
+                <p><input type=submit value=Lookup>
+        </form>
+{% endblock %}
