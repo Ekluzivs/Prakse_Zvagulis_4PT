@@ -1,10 +1,13 @@
 {% extends "lajouts.html" %}
 {% block body %}
         <h1>IP lookup</h1>
+        {% if error %}
+                <p class=error><strong>Error:</strong> {{ error }}
+        {% endif %}
         <form method=post>
                 <dl>
                         <dt>IP adrese:
-                        <dd><input type=text name=IP value="{{ request.form.IP }}">
+                        <dd><input type=text name=AiPe value="{{ request.form.AiPe }}">
                 </dl>
                 <p><input type=submit value=Lookup>
         </form>
