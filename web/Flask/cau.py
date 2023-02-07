@@ -9,6 +9,7 @@ def index():
 
 @app.route('/ip-lookup', methods=["GET", "POST"])
 def ipinsert():
+        error=None
         if request.method == "POST":
                 #AiPe ir no HTML ievades lauka, IP ir variable kas ņem no AiPe ievadītā
                 #kurā tad IP tiek iemests ipchecker funkcijā kurā citā python failā
@@ -22,13 +23,4 @@ def ipinsert():
                         #ja ir IPv4 tad notiek IPlookup funkcija, kurā tad rezultātu izmet jaunā lapā, ar atpakaļ pogu
                         look=iplookup(IP)
                         return render_template('lookup.html', look=look)
-        return render_template('ip-lookup.html')
-def ipchecker(IP):
-        #importē IPv4 pārbaudes funkciju
-        from manafunkc import check
-        return check(IP)
-
-def iplookup(IP):
-        #importē lookup funkciju
-        from manafunkc import lookup
-        return lookup(IP)
+        return render_template('ip-lookup.html', error=error)
