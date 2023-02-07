@@ -20,7 +20,7 @@ def ipinsert():
                 if ch == False:
                         error = 'Invalid IP address'
                 else:
-                        #ja ir IPv4 tad notiek IPlookup funkcija, kurā tad rezultātu izmet jaunā lapā, ar atpakaļ pogu
+                        #ja ir IPv4 tad notiek IPlookup funkcija, kurā tad izmetīs rezultātu tajā pašā lapā
                         look=iplookup(IP)
-                        return render_template('lookup.html', look=look)
+                        return render_template('ip-lookup.html', look=look)
         return render_template('ip-lookup.html', error=error)
