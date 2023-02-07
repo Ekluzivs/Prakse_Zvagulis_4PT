@@ -6,17 +6,14 @@ def check(IP):
         l=IP.split(".")
         #pārbauda vai katra oktate nav garāka par 3 simboliem, līdz ko ir vairāk, return False
         if len(l)!=4:
-                print ("Not Valid IP Address")
                 return False
         #pārbauda vai cipars ir cipars
         for x in l:
                 if not x.isdigit():
-                        print ("Not Valid IP Address")
                         return False
                 i=int(x)
                 #notiek pārbaude vai ir starp 0-255
                 if i < 0 or i > 255:
-                        print ("Not Valid IP Address")
                         return False
         #ja viss sakrīt no pārbaudēm, va ir IPv4, tad returno True
         return True
