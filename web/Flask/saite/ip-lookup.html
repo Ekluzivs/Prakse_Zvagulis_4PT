@@ -11,4 +11,8 @@
                 </dl>
                 <p><input type=submit value=Lookup>
         </form>
+        {% if look %}
+                <h3>Rezultāts</h3>
+                <p>{{ look }}</p>
+        {% endif %}
 {% endblock %}
