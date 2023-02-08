@@ -1,7 +1,7 @@
 from flask import flash, render_template, Flask, request
 #HTML faili atrodas /templates failā
 app=Flask(__name__, template_folder='templates')
-
+rezins='ip-lookup.html'
 # index lapa, nospiežot, url aizvedīs uz /ip-lookup
 @app.route('/')
 def index():
@@ -22,5 +22,5 @@ def ipinsert():
                 else:
                         #ja ir IPv4 tad notiek IPlookup funkcija, kurā tad izmetīs rezultātu tajā pašā lapā
                         look=iplookup(IP)
-                        return render_template('ip-lookup.html', look=look)
-        return render_template('ip-lookup.html', error=error)
+                        return render_template(rezins, look=look)
+        return render_template(rezins, error=error)
