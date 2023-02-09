@@ -3,7 +3,14 @@ from flask import Flask
 import subprocess as su
 def check(IP):
         #sadala IP adresi, ņemot punktus nost
-        l=IP.split(".")
+                       # pagaidām šis kods neiet, tika mēģināts 5 šādi līdzīgi varianti
+                       # kā arī kopumā divi dažādi varianti, bet testējot tie printēja error
+                       # ja ievada tukšu lauku vai nepārbaudīja
+        if "," in IP:
+                IP.split(',')
+        else:
+                IP=IP.strip()
+        for b in IP:
         #pārbauda vai katra oktate nav garāka par 3 simboliem, līdz ko ir vairāk, return False
         if len(l)!=4:
                 return False
