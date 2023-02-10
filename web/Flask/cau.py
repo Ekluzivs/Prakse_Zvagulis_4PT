@@ -16,13 +16,15 @@ def ipinsert():
                 #kurā tad IP tiek iemests ipchecker funkcijā kurā citā python failā
                 #notiek vai IP adrese ir IPv4
                 IP=request.form['AiPe']
-                ch=ipchecker(IP)
-                #ja nav, tad error kļūdu izmet
-                if ch == False:
-                        error = 'Invalid IP address'
+                if not IP:
+                        error = "Empty field, Input IPv4 Address"
                 else:
-                        #ja ir IPv4 tad notiek IPlookup funkcija, kurā tad izmetīs rezultātu tajā pašā lapā
-                        mIP=manafunkc.lookup(IP)
-                        look={"IP":IP, "INFO":mIP}
-                        return render_template(rezins, look=look)
-        return render_template(rezins, error=error)
+                        ch=ipchecker(IP)
+                        #ja nav, tad error kļūdu izmet
+                        if ch == False:
+                                error = 'Invalid IP address'
+                        else:
+                                #ja ir IPv4 tad notiek IPlookup funkcija, kurā tad izmetīs rezultātu tajā pašā lapā
+                                mIP=manafunkc.lookup(IP)
+                                look={"IP":IP, "INFO":mIP}
+        return render_template(rezins, error=error, look=look)
