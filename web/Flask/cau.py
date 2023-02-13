@@ -25,6 +25,8 @@ def ipinsert():
                                 error = 'Invalid IP address'
                         else:
                                 #ja ir IPv4 tad notiek IPlookup funkcija, kurā tad izmetīs rezultātu tajā pašā lapā
-                                mIP=manafunkc.lookup(IP)
-                                look={"IP":IP, "INFO":mIP}
+                                inf=manafunkc.lookup(IP)
+                                IP=IP.split(", ")
+                                for o in IP:
+                                        look={"IP":o, "INFO":inf}
         return render_template(rezins, error=error, look=look)
