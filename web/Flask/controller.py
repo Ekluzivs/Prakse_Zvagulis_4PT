@@ -10,8 +10,9 @@ def index():
 
 @app.route('/ip-lookup', methods=["GET", "POST"])
 def ipinsert():
-        #we create an error variable, for now it's empty
+        #we create an error variable, for now it's empty, we also create a dictionary so it would output the result
         error=None
+        info={}
         if request.method == "POST":
                 #AiPe is getting the input from the ip-lookup.html as a request, anything we input get's passed to IP variable
                 #if we press submit wihout entering anything, the if statement will check if there is any input in the IP variable
