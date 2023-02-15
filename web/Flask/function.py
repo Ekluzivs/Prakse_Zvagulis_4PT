@@ -31,5 +31,5 @@ def lookup(IP):
                 whoispopen=su.Popen(getwhois, stdout=su.PIPE)
                 whoispopen=whoispopen.stdout.read().decode('utf-8')
                 output=whoispopen.replace("\n","")
-                d={IPs:output}
+                d[IPs]=output
         return d
