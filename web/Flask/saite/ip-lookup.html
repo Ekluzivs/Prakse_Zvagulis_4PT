@@ -11,15 +11,24 @@
                 </dl>
                 <p><input type=submit value=Lookup>
         </form>
-        {% if look %}
-                <h3>Rezultāts</h3>
-                <p>{{ look }}</p>
-        {% endif %}
-{#      <table>
-        {% for key, value in look.items() %}
+        <style>
+                td{
+                        border: 1px solid black;
+                        padding: 4px;
+                }
+        </style>
+        <h3>Rezultāts</h3>
+        <table>
+        <thead>
+                <th>IP adrese</th>
+                <th>ISP</th>
+                <th>Valsts</th>
+        </thead>
         <tr>
+        {% for key, value in look.items() %}
                 <td>{{ key }}</td>
-                <td>{{ value }}</td>
+                <td>{{ value['ISPI'] }}</td>
+                <td>{{ value['country'] }}</td>
         </tr>
         {% endfor %}
         </tbody>
