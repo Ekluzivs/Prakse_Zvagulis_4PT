@@ -21,12 +21,6 @@ def ipinsert():
                 if not IP:
                         error = "Empty field, Input IPv4 Address"
                 else:
-                        #if IP is not empty, the next check begins at function.py
-                        #if the check get's a False result from the function.py, then it'll output an error message on the website
-                        check=function.check(IP)
-                        if check == False:
-                                error = 'Invalid IP address'
-                        else:
-                                #if so far the check statements are good, then info will request the result from the lookup function in funtion.py
-                                info=function.lookup(IP)
+                        #then info will request the result from the lookup function in funtion.py
+                        info=function.lookup(IP)
         return render_template(result, error=error, look=info)
