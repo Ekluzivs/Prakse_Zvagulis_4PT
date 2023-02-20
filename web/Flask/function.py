@@ -25,11 +25,27 @@ def lookup(IP):
         d={}
         #while on for cycle, the IP is read in the whois statement (getwhois) where it then get's outputted in a file (whoispopen)  
         #then it get's read and decoded to UTF-8 from the PIPE "file"
-        #after that it replaces all the new lines (\n) with empty, where the output is then passed onto a dictionary as value, with the IP as key
         for IPs in IP
                 getwhois=['whois','-h','whois.cymru.com',IPs] 
                 whoispopen=su.Popen(getwhois, stdout=su.PIPE)
                 whoispopen=whoispopen.stdout.read().decode('utf-8')
                 output=whoispopen.replace("\n","")
-                d[IPs]=output
+                #Index is gathering the last four characters of output, meanwhile it checks if output is empty, if it is,
+                #it would update the dictionary with it's values as "No information"
+                #also it checks if the last four characters contain "| NA" in index, NA means no information, if true, outputs like the previous if statement
+                index=output[-4:]
+                if not output:
+                        d[IPs]={'ISPI':"No information", 'valst': "No information"}}
+                elif "| NA" in index:
+                        d[IPs]={'ISPI':"No information", 'valst': "No information"}}
+                #if all is well, else command begins manipulating the data
+                #output replaces all of the unnecessary data with empty, after that, spliteris removes all cases of "| " where it then gathers the information
+                #from the 3rd element in the string, where the ISP variable removes all instances of commas and gathers the information from the 1st element
+                else:
+                        output=output.replace("AS      | IP               | AS Name","")
+                        spliteris=output.split("| ")[2]
+                        ISP=spliteris.split(", ")[0]
+                        #finally valsts variable gathers the last 2 characters from the output to use as a country code
+                        valsts=output[-2:]
+                        d[IPs]={'ISPI':ISP, 'country': valsts}
         return d
