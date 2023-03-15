@@ -6,9 +6,16 @@ RUN apt-get -q update \
                 wget \
                 python-dev \
                 python3.10 \
+                whois \
+                telnet \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home/merks/flask
 RUN wget https://bootstrap.pypa.io/pip/2.7/get-pip.py --no-check-certificate -O /home/merks/flask/get-pip.py
-RUN python /home/merks/flask/get-pip.py
+RUN python /home/merks/flask/get-pip.py \
+        && pip install FLask
+COPY cau.py manafunkc.py /home/merks/flask
+COPY templates/ templates/
+EXPOSE 5000
+ENTRYPOINT ["python","cau.py"]
