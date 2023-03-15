@@ -1,0 +1,28 @@
+{% extends "lajouts.html" %}
+{% block body %}
+	<h2>Ievade</h2>
+	<form method=post>
+                <dl>
+                        <dt>IP adrese:
+                        <dd><input type=text name=AI value="{{ request.form.AI }}">
+                </dl>
+                <p><input type=submit value=Lookup>
+        </form>
+
+	<table>
+		<thead>
+			<tr>
+				<th>Key</th>
+				<th>Value</th>
+			</tr>
+		</thead>
+	<tbody>
+	{% for key, value in di.items() %}
+	<tr>
+		<td> {{ key }} </td>
+		<td> {{ value }} </td>
+	</tr>
+	{% endfor %}
+	</tbody>
+	</table>
+{% endblock %}
