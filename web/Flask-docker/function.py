@@ -47,9 +47,9 @@ def lookup(IP):
                                 #also it checks if the last four characters contain "| NA" in index, NA means no information, if true, outputs like the previous if statement
                                 index=output[-4:]
                                 if not output:
-                                        d[IPs]={'ISPI':"No information", 'valst': "No information"}}
+                                        d[IPs]={'ISPI':"No information", 'valst': "No information"}
                                 elif "| NA" in index:
-                                        d[IPs]={'ISPI':"No information", 'valst': "No information"}}
+                                        d[IPs]={'ISPI':"No information", 'valst': "No information"}
                                 #if all is well, else command begins manipulating the data
                                 #output replaces all of the unnecessary data with empty, after that, spliteris removes all cases of "| " where it then gathers the information
                                 #from the 3rd element in the string, where the ISP variable removes all instances of commas and gathers the information from the 1st element
