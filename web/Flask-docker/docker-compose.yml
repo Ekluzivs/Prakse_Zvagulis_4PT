@@ -1,6 +1,8 @@
 version: "3"
 services:
   web:
-    build: .
+    image: maflask123
     ports:
       - "5000:5000"
+    volumes:
+      - "/home/merks/Prakse/web/Flask-docker:/home/merks/Prakse/web/Flask-docker"
