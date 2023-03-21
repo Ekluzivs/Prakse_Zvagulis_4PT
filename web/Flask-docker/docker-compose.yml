@@ -2,7 +2,13 @@ version: "3"
 services:
   web:
     image: maflask123
-    ports:
-      - "5000:5000"
+#    ports:
+#      - "5000:5000"
     volumes:
       - "/home/merks/Prakse/web/Flask-docker:/home/merks/Prakse/web/Flask-docker"
+  nginx:
+    image: nginx
+    ports:
+      - "1234:5001"
+    volumes:
+      - "/home/merks/Prakse/web/Flask-docker/nginx:/etc/nginx/conf.d/"
