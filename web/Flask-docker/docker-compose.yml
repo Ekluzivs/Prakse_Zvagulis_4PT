@@ -9,6 +9,6 @@ services:
   nginx:
     image: nginx
     ports:
-      - "1234:5001"
+      - "1234:80"
     volumes:
       - "/home/merks/Prakse/web/Flask-docker/nginx:/etc/nginx/conf.d/"

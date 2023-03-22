@@ -2,37 +2,57 @@
 {% block body %}
         <h1>IP lookup</h1>
 	{% if error %}
-		<p class=error><strong>Error:</strong> {{ error }}
+		<p class="text-danger"><strong>Error:</strong> {{ error }}
 	{% endif %}
         <form method=post>
                 <dl>
-                        <dt>IP adrese:
-                        <dd><input type=text name=AiPe size="80" value="{{ request.form.AiPe }}">
-                </dl>
+                        <label for="IPievade">IP adrese:
+			<div class="col-xs-5">
+                        <dd><input type=text placeholder="1.1.1.1" name=AiPe size="80" value="{{ request.form.AiPe }}">
+			</div>
+		</dl>
                 <p><input type=submit value=Lookup>
         </form>
 	</br>
-	<style>
-	td{
-	border: 1px solid black;
-	padding: 4px;
-	}
-	</style>
+	<div class="container">
 	<h3> Rezultāts </h3>	
-	<table>
-	<thead>
-		<th>IP adrese</th>
-		<th>ISP</th>
-		<th>Valsts</th>
-	</thead>
-	<tr>
-	{% for key, value in look.items() %}
+	<div class="d-flex align-items-center">
+		<table class="table table-bordered table-hover">
+		<thead>
+			<th>IP adrese</th>
+			<th>ISP</th>
+			<th>Valsts</th>
+		</thead>
+		{% for key, value in look.items() %}
+			{% if "Space has been detected" in value['ISPI'] %}
+				<tr class="table-warning">
+					<td>{{ key }}</td>
+					<td>{{ value['ISPI'] }}</td>
+					<td>{{ value['country'] }}</td>
+				</tr>
+			{% elif "No information" in value['ISPI'] %}
+				<tr class="table-warning">
+					<td>{{ key }}</td>
+					<td>{{ value['ISPI'] }}</td>
+					<td>{{ value['country'] }}</td>
+				</tr>
+			{% elif "Not a valid" in value['ISPI'] %}
+				<tr class="table-warning">
+					<td>{{ key }}</td>
+					<td>{{ value['ISPI'] }}</td>
+					<td>{{ value['country'] }}</td>
+				</tr>
+			{% else %}
+			<tr>
 			<td>{{ key }}</td>
-        		<td>{{ value['ISPI'] }}</td>
+			<td>{{ value['ISPI'] }}</td>
 			<td>{{ value['country'] }}</td>
-	</tr>
-	{% endfor %}
-	</tbody>
-	</table> 
+			</tr>
+			{% endif %}
+		{% endfor %}
+		</tbody>
+		</table>
+	</div>
+	</div>
 {% endblock %}
 
