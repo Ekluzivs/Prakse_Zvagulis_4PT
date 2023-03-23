@@ -1,43 +1,41 @@
 {% extends "lajouts.html" %}
 {% block body %}
-        <h1>IP lookup</h1>
 	{% if error %}
 		<p class="text-danger"><strong>Error:</strong> {{ error }}
 	{% endif %}
         <form method=post>
+		<div class="col-auto mb-3">
                 <dl>
-                        <label for="IPievade">IP adrese:
-			<div class="col-xs-5">
-                        <dd><input type=text placeholder="1.1.1.1" name=AiPe size="80" value="{{ request.form.AiPe }}">
-			</div>
+                        <label>IP adrese:
+                        <dd><input type=text placeholder="1.1.1.1" name=AiPe size="80" value="{{ request.form.AiPe }}">	
 		</dl>
-                <p><input type=submit value=Lookup>
+                <p><input class="btn bg-dark-subtle btn-outline-dark" type=submit value=Iesniegt>
+		</div>
         </form>
 	</br>
 	<div class="container">
-	<h3> Rezultāts </h3>	
-	<div class="d-flex align-items-center">
-		<table class="table table-bordered table-hover">
+	<h3> Rezultāts </h3>
+		<table class="table table-bordered table-hover border-dark">
 		<thead>
-			<th>IP adrese</th>
-			<th>ISP</th>
-			<th>Valsts</th>
+			<th class="bg-dark-subtle">IP adrese</th>
+			<th class="bg-dark-subtle">ISP</th>
+			<th class="bg-dark-subtle">Valsts</th>
 		</thead>
 		{% for key, value in look.items() %}
-			{% if "Space has been detected" in value['ISPI'] %}
-				<tr class="table-warning">
+			{% if "Atstarpe starp" in value['ISPI'] %}
+				<tr class="table bg-warning border-dark">
 					<td>{{ key }}</td>
 					<td>{{ value['ISPI'] }}</td>
 					<td>{{ value['country'] }}</td>
 				</tr>
-			{% elif "No information" in value['ISPI'] %}
-				<tr class="table-warning">
+			{% elif "Nav informācijas" in value['ISPI'] %}
+				<tr class="table bg-warning border-dark">
 					<td>{{ key }}</td>
 					<td>{{ value['ISPI'] }}</td>
 					<td>{{ value['country'] }}</td>
 				</tr>
-			{% elif "Not a valid" in value['ISPI'] %}
-				<tr class="table-warning">
+			{% elif "Nav derīga" in value['ISPI'] %}
+				<tr class="table bg-warning border-dark">
 					<td>{{ key }}</td>
 					<td>{{ value['ISPI'] }}</td>
 					<td>{{ value['country'] }}</td>
@@ -52,7 +50,6 @@
 		{% endfor %}
 		</tbody>
 		</table>
-	</div>
 	</div>
 {% endblock %}
 

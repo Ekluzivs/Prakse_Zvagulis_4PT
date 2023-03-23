@@ -28,12 +28,12 @@ def lookup(IP):
                 #if it finds it, it'll update the dictionary and start over with new string
                 vai_ir=re.findall(patterna, IPs)
                 if any(ir.isspace() for ir in vai_ir):
-                        d[IPs]={'ISPI':"Space has been detected between two or more IP address', please put a comma", 'valst': "No information"}
+                        d[IPs]={'ISPI':"Atstarpe starp divām vai vairākām IP adresēm eksistē, lūdzu pielieciet komatu", 'valst': " "}
                 else:
                         #if no whitespace, then begins the IP check, if check(IPs) returns a false,then it updates the dictionary and starts a new IP address
                         checked=check(IPs)
                         if checked==False:
-                                d[IPs]={'ISPI':"Not a valid IP address", 'valst': "No information"}
+                                d[IPs]={'ISPI':"Nav derīga IP adrese", 'valst': "Nav derīga IP adrese"}
                         else:
                                 #getwhois and whoispopen is used to get the information (if exists) from the inputted IP address
                                 #whoispopen is then read and decoded from the "PIPE" file and decoded to UTF-8, where it then replaces
@@ -47,9 +47,9 @@ def lookup(IP):
                                 #also it checks if the last four characters contain "| NA" in index, NA means no information, if true, outputs like the previous if statement
                                 index=output[-4:]
                                 if not output:
-                                        d[IPs]={'ISPI':"No information", 'valst': "No information"}
+                                        d[IPs]={'ISPI':"Nav informācijas", 'valst': "Nav informācijas"}
                                 elif "| NA" in index:
-                                        d[IPs]={'ISPI':"No information", 'valst': "No information"}
+                                        d[IPs]={'ISPI':"Nav informācijas", 'valst': "Nav informācijas"}
                                 #if all is well, else command begins manipulating the data
                                 #output replaces all of the unnecessary data with empty, after that, spliteris removes all cases of "| " where it then gathers the information
                                 #from the 3rd element in the string, where the ISP variable removes all instances of commas and gathers the information from the 1st element
