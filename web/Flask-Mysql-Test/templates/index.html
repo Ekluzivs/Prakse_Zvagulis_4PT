@@ -1,0 +1,22 @@
+{% extends "lajouts.html" %}
+{% block body %}
+        <h1>Pārskats</h1>
+        <p>Vai vēlaties izmantot <a href="{{ url_for('ipinsert') }}">whois?</a>
+<table>
+	<thead>
+		<tr>
+			<th>Krāsa</th>
+			<th>Priekšmets</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for data in data %}
+		<tr>
+			<td>{{ data[0] }}</td>
+			<td>{{ data[1] }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+{% endblock %}

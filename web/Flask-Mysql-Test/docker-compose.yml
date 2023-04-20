@@ -1,0 +1,23 @@
+version: "3"
+services:
+  web:
+    build: "."
+    ports:
+      - "5000:5000"
+    volumes:
+      - "/home/merks/flask:/home/merks/flask"
+  db:
+    image: mysql:8.0.28
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE="testingtesting123"
+      - MYSQL_ROOT_PASSWORD='Parole1'
+#    volumes:
+ #     - "/home/merks/flask/database:/docker-entrypoint-initdb.d/:ro"
+  ngi:
+    image: nginx
+    ports:
+      - "1234:80"
+    volumes:
+      - "/home/merks/flask/nginx:/etc/nginx/conf.d/"
