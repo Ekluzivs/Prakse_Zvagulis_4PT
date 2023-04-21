@@ -12,8 +12,8 @@ RUN apt-get -q update \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /home/merks/flask/             
-COPY cau.py manafunkc.py /home/merks/flask
+WORKDIR /home/merks/flask/Prakse_Zvagulis_4PT/web/Flask-Mysql-Test
+COPY cau.py manafunkc.py /home/merks/flask/Prakse_Zvagulis_4PT/web/Flask-Mysql-Test
 COPY templates/ templates/
 COPY ./requirements.txt ./requirements.txt
 RUN pip install -r requirements.txt
