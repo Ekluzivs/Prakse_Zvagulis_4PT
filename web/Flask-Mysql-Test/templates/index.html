@@ -16,7 +16,7 @@
 			<td>{{ data[1] }}</td>
 		</tr>
 		{% endfor %}
-
+</table>
 <table>
 	<thead>
 		<tr>
@@ -35,5 +35,22 @@
 		{% endfor %}
 	</tbody>
 </table>
-<
+<table>
+        <thead>
+                <tr>
+                        <th>Lietas ID numurs</th>
+                        <th>Noliktavas ID numurs</th>
+                        <th>test python variable</th>
+                </tr>
+        </thead>
+        <tbody>
+                {% for data2 in data2 %}
+                <tr>
+                        <td>{{ data2[0] }}</td>
+                        <td>{{ data2[1] }}</td>
+                        <td>{{ data2[2] }}</td>
+                </tr>
+                {% endfor %}
+        </tbody>
+</table>
 {% endblock %}

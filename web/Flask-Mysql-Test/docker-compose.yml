@@ -11,6 +11,7 @@ services:
     ports:
       - "3306:3306"
     environment:
+      MYSQL_DATABASE: testingtesting123
       MYSQL_ROOT_PASSWORD: Parole1
     volumes:
       - "/home/merks/flask/Prakse_Zvagulis_4PT/web/Flask-Mysql-Test/database:/docker-entrypoint-initdb.d/:ro"
