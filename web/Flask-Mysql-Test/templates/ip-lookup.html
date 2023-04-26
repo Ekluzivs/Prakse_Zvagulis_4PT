@@ -1,38 +1,58 @@
 {% extends "lajouts.html" %}
 {% block body %}
-        <h1>IP lookup</h1>
+	<div class="container mt-5">
 	{% if error %}
-		<p class=error><strong>Error:</strong> {{ error }}
+		<p class="text-danger d-flex justify-content-center" style="font-size: 20px"><strong>Error:</strong> {{ error }}
 	{% endif %}
         <form method=post>
-                <dl>
-                        <dt>IP adrese:
-                        <dd><input type=text name=AiPe size="80" value="{{ request.form.AiPe }}">
-                </dl>
-                <p><input type=submit value=Lookup>
+        	<dl>
+			<div class="form-floating mb-2">
+				<input class="form-control border-secondary" id="floatid" type=textarea placeholder="1.1.1.1, 2.2.2.2" name=AiPe value="{{ request.form.AiPe }}"></textarea>
+				<label for="floatid">IP adrese</label>	
+			</div>
+		<button class="btn bg-dark-subtle border-secondary" type=submit><strong>Iesniegt</strong></button>
+		</dl>
         </form>
+	</div>
 	</br>
-	<style>
-	td{
-	border: 1px solid black;
-	padding: 4px;
-	}
-	</style>
-	<h3> Rezultāts </h3>	
-	<table>
-	<thead>
-		<th>IP adrese</th>
-		<th>ISP</th>
-		<th>Valsts</th>
-	</thead>
-	<tr>
-	{% for key, value in look.items() %}
+	<div class="container">
+	<h3> Rezultāts </h3>
+		<table class="table table-bordered border-dark">
+		<thead>
+			<th class="bg-dark-subtle">IP adrese</th>
+			<th class="bg-dark-subtle" style="text-align:center">ISP</th>
+			<th class="bg-dark-subtle" style="text-align:center">Valsts</th>
+		</thead>
+		{% for key, value in look.items() %}
+			{% if "Atstarpe starp" in value['ISPI'] %}
+				<tr class="table border-dark" style="background-color:rgb(247,221,161)">
+					<td>{{ key }}</td>
+					<td style="text-align:center">{{ value['ISPI'] }}</td>
+					<td style="text-align:center">{{ value['country'] }}</td>
+				</tr>
+			{% elif "Nav informācijas" in value['ISPI'] %}
+				<tr class="table border-dark" style="background-color:rgb(247,221,161)">
+					<td>{{ key }}</td>
+					<td style="text-align:center">{{ value['ISPI'] }}</td>
+					<td style="text-align:center">{{ value['country'] }}</td>
+				</tr>
+			{% elif "Nav derīga" in value['ISPI'] %}
+				<tr class="table border-dark" style="background-color:rgb(247,221,161)">
+					<td>{{ key }}</td>
+					<td style="text-align:center">{{ value['ISPI'] }}</td>
+					<td style="text-align:center">{{ value['country'] }}</td>
+				</tr>
+			{% else %}
+			<tr>
 			<td>{{ key }}</td>
-        		<td>{{ value['ISPI'] }}</td>
-			<td>{{ value['country'] }}</td>
-	</tr>
-	{% endfor %}
-	</tbody>
-	</table> 
+			<td style="text-align:center">{{ value['ISPI'] }}</td>
+			<td style="text-align:center">{{ value['country'] }}</td>
+			</tr>
+			{% endif %}
+		{% endfor %}
+		</tbody>
+		</table>
+	</div>
+
 {% endblock %}
 

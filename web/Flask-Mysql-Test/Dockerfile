@@ -13,9 +13,9 @@ RUN apt-get -q update \
         && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home/merks/flask/Prakse_Zvagulis_4PT/web/Flask-Mysql-Test
-COPY cau.py manafunkc.py /home/merks/flask/Prakse_Zvagulis_4PT/web/Flask-Mysql-Test
+COPY controller.py functions.py /home/merks/flask/Prakse_Zvagulis_4PT/web/Flask-Mysql-Test
 COPY templates/ templates/
 COPY ./requirements.txt ./requirements.txt
 RUN pip install -r requirements.txt
 
-ENTRYPOINT ["python3","-u","cau.py"]
+ENTRYPOINT ["python3","-u","controller.py"]
