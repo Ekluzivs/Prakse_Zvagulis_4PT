@@ -1,8 +1,10 @@
 from flask import Flask
+#import mysql.connector
 import re
 import subprocess as su
 #creates a pattern for whitespace
 patterna=r"\s+"
+
 def check(IPs):
 	#this function checks if the data is a valid IPv4 address
 	#splits each number in to their own element, then checks if it's less than 4 elements, after which it checks if it is a digit, then the range between 0 and 255
@@ -17,6 +19,7 @@ def check(IPs):
 			return False
 	return True
 def lookup(IP):
+	global conn
 	#in this loop cycle, it removes all commas if exists and whitespaces
 	IP=[I.strip() for I in IP.split(",")]
 	d={}
@@ -51,5 +54,19 @@ def lookup(IP):
 					spliteris=output.split("| ")[2]
 					ISP=spliteris.split(", ")[0]
 					valsts=output[-2:]
+					table
 					d[IPs]={'ISPI':ISP, 'country': valsts}
+#					db=mysql.connector.connect(user='root',password='Parole1',database='mydb', host='db')
+#					mycurs=db.cursor()
+#					mycurs.execute("DROP TABLE IF EXISTS IPsdb")
+#					mycurs.execute("CREATE TABLE IPsdb (IPadr VARCHAR(25) PRIMARY KEY, ISPdb VARCHAR(50), Valsts VARCHAR(2))")
+#					for k, v in d.items():
+#						ip=k
+#						isp=v['ISPI']
+#						valst=v['country']
+#					sqin="""INSERT INTO IPsdb (IPadr, ISPdb, Valsts) VALUES(%s,%s,%s))"""
+#					sqva=(IPs,ISP,valsts)
+#					mycurs.executemany(sqin, sqva)
+#					db.commit()
+
 	return d

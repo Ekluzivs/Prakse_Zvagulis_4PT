@@ -44,6 +44,8 @@ class Datubaze:
 		SQLvalues=[(1,1,t1),(2,2,t3),(3,3,t2),(4,4,t4),(5,5,t2)]
 		self.cursor.executemany(SQLinsert, SQLvalues)
 		self.connection.commit()
+	def table_insert(self, val1):
+		sqlval
 	def krassel(self):
 		self.cursor.execute('SELECT * FROM krasas')
 		rez=[]
@@ -62,6 +64,12 @@ class Datubaze:
 		for o in self.cursor:
 			rez2.append(o)
 		return rez2
+#	def IPsel(self):
+#		self.cursor.execute("SELECT * FROM IPsdb")
+#		rezIP=[]
+#		for o in self.cursor:
+#			rezIP.append(o)
+#		return rezIP
 @app.route('/')
 def index():
 	#conn is used to be used a variable to connect with the database if not connected
@@ -79,6 +87,7 @@ rezins='ip-lookup.html'
 def ipinsert():
 	#create an error variable for error messages
 	error = None
+#	global conn
 	info={}
 	if request.method == "POST":
 		#AiPe is a variable that gathers information from the user input, if the input is empty, an error message will appear
@@ -88,6 +97,9 @@ def ipinsert():
 		else:
 		#sends IP data to backend python file, depending on the result, it will be returned to ip-lookup.html
 			info=functions.lookup(IP)
+#			if not conn:
+#				conn=Datubaze()
+#			dataIP=conn.IPsel()
 	return render_template(rezins, error=error, look=info)
 #This starts the development server, checking whether the module is being run as the main program
 if __name__ == '__main__':
