@@ -1,5 +1,4 @@
 from flask import Flask
-#import mysql.connector
 import re
 import subprocess as su
 #creates a pattern for whitespace
@@ -56,17 +55,4 @@ def lookup(IP):
 					valsts=output[-2:]
 					table
 					d[IPs]={'ISPI':ISP, 'country': valsts}
-#					db=mysql.connector.connect(user='root',password='Parole1',database='mydb', host='db')
-#					mycurs=db.cursor()
-#					mycurs.execute("DROP TABLE IF EXISTS IPsdb")
-#					mycurs.execute("CREATE TABLE IPsdb (IPadr VARCHAR(25) PRIMARY KEY, ISPdb VARCHAR(50), Valsts VARCHAR(2))")
-#					for k, v in d.items():
-#						ip=k
-#						isp=v['ISPI']
-#						valst=v['country']
-#					sqin="""INSERT INTO IPsdb (IPadr, ISPdb, Valsts) VALUES(%s,%s,%s))"""
-#					sqva=(IPs,ISP,valsts)
-#					mycurs.executemany(sqin, sqva)
-#					db.commit()
-
 	return d
