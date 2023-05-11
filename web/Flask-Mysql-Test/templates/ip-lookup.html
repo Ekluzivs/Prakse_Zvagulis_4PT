@@ -15,6 +15,7 @@
         </form>
 	</div>
 	</br>
+	{% if look %}
 	<div class="container">
 	<h3> Rezultāts </h3>
 		<table class="table table-bordered border-dark">
@@ -23,36 +24,36 @@
 			<th class="bg-dark-subtle" style="text-align:center">ISP</th>
 			<th class="bg-dark-subtle" style="text-align:center">Valsts</th>
 		</thead>
-		{% for key, value in look.items() %}
-			{% if "Atstarpe starp" in value['ISPI'] %}
+		{% for value in look %}
+			{% if "Atstarpe" in value[1] %}
 				<tr class="table border-dark" style="background-color:rgb(247,221,161)">
-					<td>{{ key }}</td>
-					<td style="text-align:center">{{ value['ISPI'] }}</td>
-					<td style="text-align:center">{{ value['country'] }}</td>
+					<td>{{ value[0] }}</td>
+					<td style="text-align:center">{{ value[1] }}</td>
+					<td style="text-align:center">{{ value[2] }}</td>
 				</tr>
-			{% elif "Nav informācijas" in value['ISPI'] %}
+			{% elif "informācijas" in value[1] %}
 				<tr class="table border-dark" style="background-color:rgb(247,221,161)">
-					<td>{{ key }}</td>
-					<td style="text-align:center">{{ value['ISPI'] }}</td>
-					<td style="text-align:center">{{ value['country'] }}</td>
+					<td>{{ value[0] }}</td>
+					<td style="text-align:center">{{ value[1] }}</td>
+					<td style="text-align:center">{{ value[2] }}</td>
 				</tr>
-			{% elif "Nav derīga" in value['ISPI'] %}
+			{% elif "derīga" in value[1] %}
 				<tr class="table border-dark" style="background-color:rgb(247,221,161)">
-					<td>{{ key }}</td>
-					<td style="text-align:center">{{ value['ISPI'] }}</td>
-					<td style="text-align:center">{{ value['country'] }}</td>
+					<td>{{ value[0] }}</td>
+					<td style="text-align:center">{{ value[1] }}</td>
+					<td style="text-align:center">{{ value[2] }}</td>
 				</tr>
 			{% else %}
 			<tr>
-			<td>{{ key }}</td>
-			<td style="text-align:center">{{ value['ISPI'] }}</td>
-			<td style="text-align:center">{{ value['country'] }}</td>
+			<td>{{ value[0] }}</td>
+			<td style="text-align:center">{{ value[1] }}</td>
+			<td style="text-align:center">{{ value[2] }}</td>
 			</tr>
 			{% endif %}
 		{% endfor %}
 		</tbody>
 		</table>
 	</div>
-
+	{% endif %}
 {% endblock %}
 

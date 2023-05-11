@@ -25,32 +25,30 @@ class Database:
 #The table that has foreign keys has to be dropped first, in this case tests, becuse nolikt and krasas are foreign keys, then nolikt because krasas is a foreign key, then krasas
 		self.cursor.execute('DROP TABLE IF EXISTS IP_mysql')
 
-		self.cursor.execute('CREATE TABLE IP_mysql(IP_key VARCHAR(16) not null primary key, ISP VARCHAR(50), valsts VARCHAR(2))')
+		self.cursor.execute('CREATE TABLE IP_mysql(IP_key VARCHAR(16) not null, ISP VARCHAR(100), valsts VARCHAR(3))')
 		#Creates a test table with multiple foreign keys connecting it, this table tests multiple foreign keys and python variables
 		self.connection.commit()
-#	def table_insert(self, val1):
-	def test_select(self):
-		self.cursor.execute('SELECT * FROM tests')
-		rez2=[]
-		for o in self.cursor:
-			rez2.append(o)
-		return rez2
+
+	def insert_IP(self, IPs, ISP, country):
+		sql_insert="""INSERT INTO IP_mysql(IP_key, ISP, valsts) VALUES (%s,%s,%s)"""
+		sql_values=[(IPs, ISP, country)]
+		self.cursor.executemany(sql_insert, sql_values)
+		self.connection.commit()
+	def IP_select(self):
+		self.cursor.execute('SELECT * FROM IP_mysql')
+		select=self.cursor.fetchall()
+		return select
 @app.route('/')
 def index():
-	#conn is used to be used a variable to connect with the database if not connected
-	global conn
-	if not conn:
-		conn=Database()
-		conn.create_table()
-	#data gathers information from the class Datubaze and then returns that data to index.html
 	return render_template('index.html')
 rezins='ip-lookup.html'
 @app.route('/ip-lookup', methods=["GET", "POST"])
 def ip_insert():
 	#create an error variable for error messages
 	error = None
-#	global conn
-	info={}
+	global conn
+	data={}
+	data_out={}
 	if request.method == "POST":
 		#AiPe is a variable that gathers information from the user input, if the input is empty, an error message will appear
 		IP=request.form['AiPe']
@@ -59,10 +57,17 @@ def ip_insert():
 		else:
 		#sends IP data to backend python file, depending on the result, it will be returned to ip-lookup.html
 			info=functions.lookup(IP)
-#			if not conn:
-#				conn=Datubaze()
-#			dataIP=conn.IPsel()
-	return render_template(rezins, error=error, look=info)
+			if not conn:
+				conn=Database()
+				conn.create_table()
+
+			data=info[IP]
+			print(data)
+			ISP=data['ISPI']
+			country=data['country']
+			conn.insert_IP(IP, ISP, country)
+			data_out=conn.IP_select()
+	return render_template(rezins, error=error, look=data_out)
 #This starts the development server, checking whether the module is being run as the main program
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=5000)
