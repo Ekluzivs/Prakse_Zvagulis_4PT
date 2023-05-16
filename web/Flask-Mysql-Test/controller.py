@@ -25,19 +25,16 @@ class Database:
 #The table that has foreign keys has to be dropped first, in this case tests, becuse nolikt and krasas are foreign keys, then nolikt because krasas is a foreign key, then krasas
 		self.cursor.execute('DROP TABLE IF EXISTS IP_mysql')
 
-		self.cursor.execute('CREATE TABLE IP_mysql(id INT AUTO_INCREMENT PRIMARY KEY NOT NULL, IP_key VARCHAR(16) not null, ISP VARCHAR(100), valsts VARCHAR(3))')
+		self.cursor.execute('CREATE TABLE IP_mysql(id INT AUTO_INCREMENT PRIMARY KEY NOT NULL, IP_key TEXT not null, ISP TEXT, valsts TEXT)')
 		#Creates a test table with multiple foreign keys connecting it, this table tests multiple foreign keys and python variables
 		self.connection.commit()
 
 	def check_IP(self):
-		sql_check='SELECT IP_key, COUNT(*) AS count FROM IP_mysql GROUP BY IP_key HAVING count > 1'
-		if sql_check:
-			sql_delete='DELETE t1 FROM IP_mysql t1 INNER JOIN IP_mysql t2 WHERE t1.id<t2.id AND t1.IP_key = t2.IP_key AND t1.ISP=t2.ISP AND t1.valsts=t2.valsts'
-			self.cursor.execute(sql_delete)
-			self.connection.commit()
+		sql_delete='DELETE t1 FROM IP_mysql t1 INNER JOIN IP_mysql t2 WHERE t1.id<t2.id AND t1.IP_key = t2.IP_key AND t1.ISP=t2.ISP AND t1.valsts=t2.valsts'
+		self.cursor.execute(sql_delete)
+		self.connection.commit()
 	def insert_IP(self, IPs, ISP, country):
 		sql_insert='INSERT INTO IP_mysql(IP_key, ISP, valsts) VALUES(%s,%s,%s)'
-		print(sql_insert)
 		sql_values=[(IPs, ISP, country)]
 		self.cursor.executemany(sql_insert, sql_values)
 		self.connection.commit()
@@ -64,15 +61,15 @@ def ip_insert():
 		else:
 		#sends IP data to backend python file, depending on the result, it will be returned to ip-lookup.html
 			info=functions.lookup(IP)
+			print(info)
 			if not conn:
 				conn=Database()
 				conn.create_table()
-
-			data=info[IP]
-			print(data)
-			ISP=data['ISPI']
-			country=data['country']
-			conn.insert_IP(IP, ISP, country)
+			for ip in info:
+				data=info[ip]
+				ISP=data['ISPI']
+				country=data['country']
+				conn.insert_IP(ip, ISP, country)
 			conn.check_IP()
 			data_out=conn.IP_select()
 	return render_template(rezins, error=error, look=data_out)

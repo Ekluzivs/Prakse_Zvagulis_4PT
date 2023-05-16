@@ -25,23 +25,23 @@
 			<th class="bg-dark-subtle" style="text-align:center">Valsts</th>
 		</thead>
 		{% for value in look %}
-			{% if "Atstarpe" in value[1] %}
+			{% if "Atstarpe" in value[2] %}
 				<tr class="table border-dark" style="background-color:rgb(247,221,161)">
-					<td>{{ value[0] }}</td>
-					<td style="text-align:center">{{ value[1] }}</td>
+					<td>{{ value[1] }}</td>
 					<td style="text-align:center">{{ value[2] }}</td>
+					<td style="text-align:center">{{ value[3] }}</td>
 				</tr>
-			{% elif "informācijas" in value[1] %}
+			{% elif "informācijas" in value[2] %}
 				<tr class="table border-dark" style="background-color:rgb(247,221,161)">
-					<td>{{ value[0] }}</td>
-					<td style="text-align:center">{{ value[1] }}</td>
+					<td>{{ value[1] }}</td>
 					<td style="text-align:center">{{ value[2] }}</td>
+					<td style="text-align:center">{{ value[3] }}</td>
 				</tr>
-			{% elif "derīga" in value[1] %}
+			{% elif "derīga" in value[2] %}
 				<tr class="table border-dark" style="background-color:rgb(247,221,161)">
-					<td>{{ value[0] }}</td>
-					<td style="text-align:center">{{ value[1] }}</td>
+					<td>{{ value[1] }}</td>
 					<td style="text-align:center">{{ value[2] }}</td>
+					<td style="text-align:center">{{ value[3] }}</td>
 				</tr>
 			{% else %}
 			<tr>
