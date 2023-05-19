@@ -1,19 +1,36 @@
 {% extends "lajouts.html" %}
 {% block body %}
 	<div class="container mt-5">
-	{% if error %}
+	{% if error and not clear_btn %}
 		<p class="text-danger d-flex justify-content-center" style="font-size: 20px"><strong>Error:</strong> {{ error }}
 	{% endif %}
-        <form method=post>
+        <form method=post id="formats">
         	<dl>
 			<div class="form-floating mb-2">
 				<input class="form-control border-secondary" id="floatid" type=textarea placeholder="1.1.1.1, 2.2.2.2" name=AiPe value="{{ request.form.AiPe }}"></textarea>
 				<label for="floatid">IP adrese</label>	
 			</div>
 		<button class="btn bg-dark-subtle border-secondary" type=submit><strong>Iesniegt</strong></button>
+		<button class="btn bg-dark-subtle border-secondary" type=submit name="clear_btn" onclick="clearForm()"><strong>Dzēst</strong></button>
 		</dl>
-        </form>
+	<script>
+		function clearForm() {
+			document.getElementById("floatid").value="";
+			document.getElementById("formats").submit();
+			location.href = location.href;
+		}
+	</script>
+	<div class="form-check form-check-inline">
+		<input class="form-check-input" type="radio" name="Radioinput" id="Radioinput1" value="ip-lookup-v" checked>
+		<label class="form-check-label" for="Radioinput1">IP uzmeklēšana</label>
 	</div>
+	<div class="form-check form-check-inline">
+		<input class="form-check-input" type="radio" name="Radioinput" id="Radioinput2" value="domain-lookup-v">
+		<label class="form-check-label" for="Radioinput2">Domēna uzmeklēšana</label>
+	</div>
+	</form>
+	</div>
+	<div>
 	</br>
 	{% if look %}
 	<div class="container">
