@@ -20,7 +20,6 @@ class Database:
 	def create_table(self, table_name,s1,s2,s3,s4):
 		drop=f'DROP TABLE IF EXISTS {table_name}'
 		self.cursor.execute(drop)
-		print("hi")
 		create_t=f"CREATE TABLE {table_name}({s1} INT AUTO_INCREMENT PRIMARY KEY NOT NULL, {s2} TEXT not null, {s3} TEXT, {s4} TEXT)"
 		self.cursor.execute(create_t)
 
@@ -31,11 +30,11 @@ class Database:
 		self.cursor.execute(sql_delete)
 	def drop_table(self):
 		self.cursor.execute('DELETE FROM IP_mysql')
-	def insert_IP(self, IPs, ISP, country, table_name):
+	def insert_IP(self, IPs, ISP, country):
 		sql_insert='INSERT INTO IP_mysql(IP_key, ISP, valsts) VALUES(%s,%s,%s)'
 		sql_values=[(IPs, ISP, country)]
 		self.cursor.executemany(sql_insert, sql_values)
-	def IP_select(self, table_name):
+	def IP_select(self):
 		self.cursor.execute('SELECT * FROM IP_mysql')
 		select=self.cursor.fetchall()
 		return select
@@ -62,11 +61,15 @@ def ip_insert():
 			s2=lst[2]
 			s3=lst[3]
 			s4=lst[4]
-			print(table_name, s1,s2,s3,s4)
 			conn.create_table(table_name, s1,s2,s3,s4)
 	if request.method == "POST":
 		#AiPe is a variable that gathers information from the user input, if the input is empty, an error message will appear
 		IP=request.form['AiPe']
+		radio_option=request.form.get('Radioinput')
+		if radio_option == "ip-lookup-v":
+			print("HEllo")
+		elif radio_option=="domain-lookup-v":
+			print("Amigo")
 		if not IP:
 			error = "Tukšs lauks, lūdzu ievadiet derīgu IPv4 adresi"
 		elif request.form.get('clear_btn') is not None:

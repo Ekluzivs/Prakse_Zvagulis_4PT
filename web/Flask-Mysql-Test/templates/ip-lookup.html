@@ -21,11 +21,11 @@
 		}
 	</script>
 	<div class="form-check form-check-inline">
-		<input class="form-check-input" type="radio" name="Radioinput" id="Radioinput1" value="ip-lookup-v" checked>
+		<input class="form-check-input" type="radio" name="Radioinput" id="Radioinput1" value="ip-lookup-v" {% if request.form.Radioinput=="ip-lookup-v" %} checked{% endif %}>
 		<label class="form-check-label" for="Radioinput1">IP uzmeklēšana</label>
 	</div>
 	<div class="form-check form-check-inline">
-		<input class="form-check-input" type="radio" name="Radioinput" id="Radioinput2" value="domain-lookup-v">
+		<input class="form-check-input" type="radio" name="Radioinput" id="Radioinput2" value="domain-lookup-v" {% if request.form.Radioinput == "domain-lookup-v" %}checked{% endif %}>
 		<label class="form-check-label" for="Radioinput2">Domēna uzmeklēšana</label>
 	</div>
 	</form>
