@@ -18,7 +18,6 @@ def check(IPs):
 			return False
 	return True
 def lookup(IP):
-	global conn
 	#in this loop cycle, it removes all commas if exists and whitespaces
 	IP=[I.strip() for I in IP.split(",")]
 	d={}
@@ -55,3 +54,23 @@ def lookup(IP):
 					valsts=output[-2:]
 					d[IPs]={'ISPI':ISP, 'country': valsts}
 	return d
+
+def dom_lookup(dom):
+	dom_dict={}
+	for doms in dom:
+		vai_dom_ir=re.findall(patterna, doms)
+		if any(ir_doms.isspace() for ir_doms in vai_dom_ir):
+			dom_dict[doms]={'IP': "Atstarpe starp divām vai vairākām domēnām, lūdzu ievadiet komatu(s)", 'VT-LINK': "N/A"}
+		else:
+			getdomain=['dig','+short', doms]
+			doms_popen=su.Popen(getdomain, stdout=su.PIPE)
+			doms_popen=doms_popen.stdout.read().decode('utf-8')
+			output=doms_popen.strip().split("\n")[0]
+			print(output)
+			if output == '':
+				dom_dict[doms]={'IP':"Nav informācijas", 'VT-LINK': "N/A"}
+			else:
+				link=f"https://www.virustotal.com/gui/domain/{doms}"
+				dom_dict[doms]={'IP': output, 'VT-LINK': link}
+				print(dom_dict)
+	return dom_dict

@@ -6,9 +6,13 @@
 	{% endif %}
         <form method=post id="formats">
         	<dl>
-			<div class="form-floating mb-2">
+			<div class="form-floating mb-2" id="IP-input-f">
 				<input class="form-control border-secondary" id="floatid" type=textarea placeholder="1.1.1.1, 2.2.2.2" name=AiPe value="{{ request.form.AiPe }}"></textarea>
 				<label for="floatid">IP adrese</label>	
+			</div>
+			<div class="form-floating mb-2" id="domain-input-f" style="display:none">
+				<input class="form-control border-secondary" id="labelid" type=textarea placeholder="piemers.lv" name=domain value="{{ request.form.domain }}"></textarea>
+				<label for="labelid">Domēnu nosaukums</label>
 			</div>
 		<button class="btn bg-dark-subtle border-secondary" type=submit><strong>Iesniegt</strong></button>
 		<button class="btn bg-dark-subtle border-secondary" type=submit name="clear_btn" onclick="clearForm()"><strong>Dzēst</strong></button>
@@ -16,6 +20,7 @@
 	<script>
 		function clearForm() {
 			document.getElementById("floatid").value="";
+			document.getElementById("labelid").value="";
 			document.getElementById("formats").submit();
 			location.href = location.href;
 		}
@@ -30,12 +35,13 @@
 	</div>
 	</form>
 	</div>
+	</script>
 	<div>
 	</br>
 	{% if look %}
 	<div class="container">
 	<h3> Rezultāts </h3>
-		<table class="table table-bordered border-dark">
+		<table class="table table-bordered border-dark" id="IP-id-table" style="display: table;">
 		<thead>
 			<th class="bg-dark-subtle">IP adrese</th>
 			<th class="bg-dark-subtle" style="text-align:center">ISP</th>
@@ -71,6 +77,67 @@
 		</tbody>
 		</table>
 	</div>
+	</div class="container">
+		<table class="table table-bordered border-dark" id="domain-ip-table" style="display: none;">
+                <thead>
+                        <th class="bg-dark-subtle">Domēnas nosaukums</th>
+                        <th class="bg-dark-subtle" style="text-align:center">IP</th>
+                        <th class="bg-dark-subtle" style="text-align:center">Virus Total</th>
+                </thead>
+                {% for value in dom_data %}
+                        {% if "Atstarpe" in value[2] %}
+                                <tr class="table border-dark" style="background-color:rgb(247,221,161)">
+                                        <td>{{ value[1] }}</td>
+                                        <td style="text-align:center">{{ value[2] }}</td>
+                                        <td style="text-align:center">{{ value[3] }}</td>
+                                </tr>
+                        {% elif "informācijas" in value[2] %}
+                                <tr class="table border-dark" style="background-color:rgb(247,221,161)">
+                                        <td>{{ value[1] }}</td>
+                                        <td style="text-align:center">{{ value[2] }}</td>
+                                        <td style="text-align:center">{{ value[3] }}</td>
+                                </tr>
+                        {% elif "derīga" in value[2] %}
+                                <tr class="table border-dark" style="background-color:rgb(247,221,161)">
+                                        <td>{{ value[1] }}</td>
+                                        <td style="text-align:center">{{ value[2] }}</td>
+                                        <td style="text-align:center">{{ value[3] }}</td>
+                                </tr>
+                        {% else %}
+                        <tr>
+                        <td>{{ value[1] }}</td>
+                        <td style="text-align:center">{{ value[2] }}</td>
+                        <td style="text-align:center" href={{ value[3] }} target="blank">VT saite</td>
+                        </tr>
+                        {% endif %}
+                {% endfor %}
+                </tbody>
+                </table>
+	</div>
+        <script>
+                function radiooption() {
+                        var ipinput = document.getElementById("IP-input-f");
+                        var domaininput = document.getElementById("domain-input-f");
+
+                        var iptable = document.getElementById("IP-id-table");
+                        var domtable = document.getElementById("domain-id-table");S
+
+                        if(document.getElementById("Radioinput1").checked) {
+                                ipinput.style.display = "block";
+                                iptable.style.display = "table";
+                                domtable.style.display = "none";
+                                domaininput.style.display = "none";
+                        }else if (document.getElementById("Radioinput2").checked) {
+                                domaininput.style.display = "block";
+                                ipinput.style.display = "none";
+                                domtable.style.display = "table";
+                                iptable.style.display = "none";
+                        }
+                }
+                document.getElementById("Radioinput1").addEventListener("change", radiooption);
+                document.getElementById("Radioinput2").addEventListener("change", radiooption);
+		radiooption();
+        </script>
 	{% endif %}
 {% endblock %}
 
