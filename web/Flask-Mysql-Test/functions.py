@@ -3,7 +3,13 @@ import re
 import subprocess as su
 #creates a pattern for whitespace
 patterna=r"\s+"
-
+#o=["delfi.lv", "youtube.com", "geeksforgeeks.org", "discord.com"]
+#for oi in o:
+#	getdomain=['dig','+short', oi]
+#	doms_popen=su.Popen(getdomain, stdout=su.PIPE)
+#	doms_popen=doms_popen.stdout.read().decode('utf-8')
+#	ou=doms_popen.strip().split("\n")[0]
+#	print(ou)
 def check(IPs):
 	#this function checks if the data is a valid IPv4 address
 	#splits each number in to their own element, then checks if it's less than 4 elements, after which it checks if it is a digit, then the range between 0 and 255
@@ -23,6 +29,7 @@ def lookup(IP):
 	d={}
 	#the first if statement checks each IP address, if there exists IP addresses with a whitespace, then Error message will appear
 	for IPs in IP:
+		print(IPs)
 		vai_ir=re.findall(patterna, IPs)
 		if any(ir.isspace() for ir in vai_ir):
 			d[IPs]={'ISPI':"Atstarpe eksistē starp divām vai vairākām ievadēm, lūdzu ievadiet komatu(s)", 'country': "N/A"}
@@ -56,6 +63,7 @@ def lookup(IP):
 	return d
 
 def dom_lookup(dom):
+	dom=[I.strip() for I in dom.split(",")]
 	dom_dict={}
 	for doms in dom:
 		vai_dom_ir=re.findall(patterna, doms)
@@ -66,11 +74,9 @@ def dom_lookup(dom):
 			doms_popen=su.Popen(getdomain, stdout=su.PIPE)
 			doms_popen=doms_popen.stdout.read().decode('utf-8')
 			output=doms_popen.strip().split("\n")[0]
-			print(output)
 			if output == '':
 				dom_dict[doms]={'IP':"Nav informācijas", 'VT-LINK': "N/A"}
 			else:
-				link=f"https://www.virustotal.com/gui/domain/{doms}"
+				link=f"https://www.virustotal.com/gui/domain/{dom}"
 				dom_dict[doms]={'IP': output, 'VT-LINK': link}
-				print(dom_dict)
 	return dom_dict

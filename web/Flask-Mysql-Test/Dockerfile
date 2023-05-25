@@ -4,6 +4,7 @@ RUN apt-get -q update \
                 zip \
                 unzip \
                 wget \
+		dnsutils \
                 python-dev \
                 python3.10 \
 		whois \
