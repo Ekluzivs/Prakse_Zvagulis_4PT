@@ -13,8 +13,8 @@ RUN apt-get -q update \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*
 
-WORKDIR ${dir}
-COPY controller.py functions.py ${dir}
+WORKDIR /home/merks/flask/Prakse_Zvagulis_4PT/web/Flask-Mysql-Test
+COPY controller.py functions.py /home/merks/flask/Prakse_Zvagulis_4PT/web/Flask-Mysql-Test
 COPY templates/ templates/
 COPY ./requirements.txt ./requirements.txt
 RUN pip install -r requirements.txt

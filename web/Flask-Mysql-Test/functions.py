@@ -1,15 +1,22 @@
 from flask import Flask
 import re
 import subprocess as su
+import validators
 #creates a pattern for whitespace
-patterna=r"\s+"
-#o=["delfi.lv", "youtube.com", "geeksforgeeks.org", "discord.com"]
-#for oi in o:
-#	getdomain=['dig','+short', oi]
-#	doms_popen=su.Popen(getdomain, stdout=su.PIPE)
-#	doms_popen=doms_popen.stdout.read().decode('utf-8')
-#	ou=doms_popen.strip().split("\n")[0]
-#	print(ou)
+patterna="\s+"
+# Function group used for checking whether or not the data the user has inputted is valid
+def check_dom(doms):
+	#using regex pattern, checking whether or not the domain is correctly written
+	#False: hyphen at the beginning or end of domain, more than 63 characters
+	reg_pat="^((?!-)[A-Za-z0-9-]"+"{1,63}(?<!-)\\.)"+"[A-Za-z]{2,6}"
+	if len(doms) > 64:
+		return False
+	#validator checks for trailing dots and underscores, can't identify sub-domains
+	elif(re.search(reg_pat, doms)) and validators.domain(doms):
+		return True
+	else:
+		return False
+
 def check(IPs):
 	#this function checks if the data is a valid IPv4 address
 	#splits each number in to their own element, then checks if it's less than 4 elements, after which it checks if it is a digit, then the range between 0 and 255
@@ -23,6 +30,21 @@ def check(IPs):
 		if i < 0 or i > 255:
 			return False
 	return True
+
+#def hash_lookup(hash):
+#	hash=[I.strip() for I in hash.split(",")]
+#	hash_dict={}
+#	for hashs in hash:
+#		vai_hash_ir=re.findall(patterna, hashs)
+#		if any(hash_ir.isspace() for hash_ir in vai_hash_ir):
+#			hash_dict[hashs]={'drosiba': 'Atstarpe eksistē starp divām vai vairākām ievadēm, lūdzu ievadiet komatu(s)', 'VT_hash': "N/A"}
+#		else:
+
+
+
+
+
+
 def lookup(IP):
 	#in this loop cycle, it removes all commas if exists and whitespaces
 	IP=[I.strip() for I in IP.split(",")]
@@ -70,13 +92,17 @@ def dom_lookup(dom):
 		if any(ir_doms.isspace() for ir_doms in vai_dom_ir):
 			dom_dict[doms]={'IP': "Atstarpe starp divām vai vairākām domēnām, lūdzu ievadiet komatu(s)", 'VT-LINK': "N/A"}
 		else:
-			getdomain=['dig','+short', doms]
-			doms_popen=su.Popen(getdomain, stdout=su.PIPE)
-			doms_popen=doms_popen.stdout.read().decode('utf-8')
-			output=doms_popen.strip().split("\n")[0]
-			if output == '':
-				dom_dict[doms]={'IP':"Nav informācijas", 'VT-LINK': "N/A"}
+			checked_dom=check_dom(doms)
+			if checked_dom == False:
+				dom_dict[doms]={'IP':"Nav derīga domēnu adrese", 'VT-LINK': "N/A"}
 			else:
-				link=f"https://www.virustotal.com/gui/domain/{dom}"
-				dom_dict[doms]={'IP': output, 'VT-LINK': link}
+				getdomain=['dig','+short', doms]
+				doms_popen=su.Popen(getdomain, stdout=su.PIPE)
+				doms_popen=doms_popen.stdout.read().decode('utf-8')
+				output=doms_popen.strip().split("\n")[0]
+				if output == '':
+					dom_dict[doms]={'IP':"Nav informācijas", 'VT-LINK': "N/A"}
+				else:
+					link="https://www.virustotal.com/gui/domain/"+doms
+					dom_dict[doms]={'IP': output, 'VT-LINK': link}
 	return dom_dict

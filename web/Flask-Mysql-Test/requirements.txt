@@ -10,3 +10,4 @@ Flask-MySQL
 pymysql
 mysql-connector-python
 cryptography
+validators

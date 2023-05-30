@@ -16,28 +16,31 @@ class Database:
 		self.connection=mysql.connector.connect(user=user, password=password, database=database, host=host)
 		self.connection.autocommit=True
 		self.cursor=self.connection.cursor()
-	#this function drops, creates and fills out the tables
+	#this function drops and creates the tables over an iteration from another function, with the help of f-string, s1 is the id, s2,s3,s4 are the data values
 	def create_table(self, table_name,s1,s2,s3,s4):
 		drop=f'DROP TABLE IF EXISTS {table_name}'
 		self.cursor.execute(drop)
 		create_t=f"CREATE TABLE {table_name}({s1} INT AUTO_INCREMENT PRIMARY KEY NOT NULL, {s2} TEXT not null, {s3} TEXT, {s4} TEXT)"
 		self.cursor.execute(create_t)
 
-#The table that has foreign keys has to be dropped first, in this case tests, becuse nolikt and krasas are foreign keys, then nolikt because krasas is a foreign key, then krasas
-		#Creates a test table with multiple foreign keys connecting it, this table tests multiple foreign keys and python variables
+# Function group that is used for deleting any duplicates in the tables
+#	def check_IP(self):
+#		sql_delete='DELETE t1 FROM hash_db t1 INNER JOIN hash_db t2 WHERE t1.id<t2.id AND t1.hash = t2.hash AND t1.drosiba=t2.drosiba AND t1.VT_hash_link=t2.VT_hash_link'
+#		self.cursor.execute(sql_delete)
 	def check_dom(self):
-		dom_delete='DELETE t1 FROM domain_db t1 INNER JOIN domain_db t2 WHERE t1.id<t2.id AND t1.domens = t2.domens AND t1.IP=t2.IP AND t1.VT_link=t2.VT_link'
+		dom_delete='DELETE t1 FROM domain_db t1 INNER JOIN domain_db t2 WHERE t1.id<t2.id AND t1.domens = t2.domens AND t1.VT_link=t2.VT_link'
 		self.cursor.execute(dom_delete)
 	def check_IP(self):
 		sql_delete='DELETE t1 FROM IP_mysql t1 INNER JOIN IP_mysql t2 WHERE t1.id<t2.id AND t1.IP_key = t2.IP_key AND t1.ISP=t2.ISP AND t1.valsts=t2.valsts'
 		self.cursor.execute(sql_delete)
-
+#Function group that is used for deleting any and all data in tables
+# NOTE!!! CURRENTLY THIS ISN'T WORKING FOR REASONS UNKNOWN
 	def drop_domain(self):
 		self.cursor.execute('DELETE FROM domain_db')
 	def drop_table(self):
 		self.cursor.execute('DELETE FROM IP_mysql')
 
-
+#Function group used for inserting data into tables
 	def insert_dom(self, dom_loop, dom_IP, VT_link):
 		SQL_i='INSERT INTO domain_db(domens, IP, VT_link) VALUES(%s, %s, %s)'
 		sql_v=[(dom_loop, dom_IP, VT_link)]
@@ -47,7 +50,7 @@ class Database:
 		sql_values=[(IPs, ISP, country)]
 		self.cursor.executemany(sql_insert, sql_values)
 
-
+#Function group used for selecting the tables and it's values for output
 	def IP_select(self):
 		self.cursor.execute('SELECT * FROM IP_mysql')
 		select=self.cursor.fetchall()
@@ -65,14 +68,20 @@ def ip_insert():
 	#create an error variable for error messages
 	error = None
 	global conn
+	#create necessary dictionaries, 1 dictionary for inputting data to mysql, 1 dictionary for outputting data to front-end
 	data={}
 	data_out={}
 	data_dom={}
 	dom_data_out={}
+	data_hash={}
+	hash_data_out={}
+	#create list for creating tables in Database class
 	list=[
 		["IP_mysql", "id","IP_key","ISP","valsts"],
-		["domain_db","id","domens","IP","VT_link"]
+		["domain_db","id","domens","IP","VT_link"],
+		["hash_db", "id","hash","drosiba","VT_hash_link"]
 	]
+	#if no connection, it'll create a Database class and then over each iteration it'll create a table
 	if not conn:
 		conn=Database()
 		for lst in list:
@@ -83,11 +92,22 @@ def ip_insert():
 			s4=lst[4]
 			conn.create_table(table_name, s1,s2,s3,s4)
 	if request.method == "POST":
-		print(request.form)
 		#AiPe is a variable that gathers information from the user input, if the input is empty, an error message will appear
 		radio_option=request.form.get('Radioinput')
 		IP=request.form['AiPe']
 		dom=request.form['domain']
+		hash=request.form['hesh']
+		if radio_option == "hash-lookup-v":
+			if not hash:
+				error = "tukšs lauks, lūdzu ievadiet derīgu jaucējvērtību"
+			else:
+				info_hash=functions.hash_lookup(hash)
+				for hash_loop in info_hash:
+					data_hash=info_hash[hash_loop]
+					hash_dros=data_hash['drosiba']
+					VT_hash=data_hash['VT_hash']
+				hash_data_out=conn.hash_select()
+				return render_template(rezins, hash_data=hash_data_out)
 		if radio_option == "domain-lookup-v":
 			if not dom:
 				error = "Tukšs lauks, lūdzu ievadiet derīgu domēnu"
@@ -103,15 +123,8 @@ def ip_insert():
 					dom_IP=data_dom['IP']
 					VT_link=data_dom['VT-LINK']
 					conn.insert_dom(dom_loop, dom_IP, VT_link)
-#				for lst in list:
-#					table_name=lst[0]
-#					s1=lst[1]
-#					s2=lst[2]
-#					s3=lst[3]
-#					s4=lst[4]
 				conn.check_dom()
 				dom_data_out=conn.dom_select()
-				print(dom_data_out)
 				return render_template(rezins, dom_data=dom_data_out)
 		elif radio_option=="ip-lookup-v":
 			if not IP:
@@ -130,12 +143,6 @@ def ip_insert():
 					ISP=data['ISPI']
 					country=data['country']
 					conn.insert_IP(ip, ISP, country)
-#				for lst in list:
-#					table_name=lst[0]
-#					s1=lst[1]
-#					s2=lst[2]
-#					s3=lst[3]
-#					s4=lst[4]
 				conn.check_IP()
 				data_out=conn.IP_select()
 				print(data_out)
