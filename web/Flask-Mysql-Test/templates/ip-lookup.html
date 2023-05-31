@@ -40,7 +40,7 @@
 		<label class="form-check-label" for="Radioinput2">Domēna uzmeklēšana</label>
 	</div>
         <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Radioinput" id="Radioinput3" value="hash-lookup-v" disabled>
+                <input class="form-check-input" type="radio" name="Radioinput" id="Radioinput3" value="hash-lookup-v" {% if request.form.Radioinput == "hash-input-v" %}checked{% endif %}>
                 <label class="form-check-label" for="Radioinput3">jaucējvērtību uzmeklēšana (WIP)</label>
         </div>
 	</form>
@@ -189,7 +189,7 @@
                                         <td style="text-align:center">{{ value[2] }}</td>
                                         <td style="text-align:center">{{ value[3] }}</td>
                                 </tr>
-                        {% elif "derīga" in value[2] %}
+                        {% elif "Ievade" in value[2] %}
                                 <tr class="table border-dark" style="background-color:rgb(247,221,161)">
                                         <td>{{ value[1] }}</td>
                                         <td style="text-align:center">{{ value[2] }}</td>

@@ -24,9 +24,9 @@ class Database:
 		self.cursor.execute(create_t)
 
 # Function group that is used for deleting any duplicates in the tables
-#	def check_IP(self):
-#		sql_delete='DELETE t1 FROM hash_db t1 INNER JOIN hash_db t2 WHERE t1.id<t2.id AND t1.hash = t2.hash AND t1.drosiba=t2.drosiba AND t1.VT_hash_link=t2.VT_hash_link'
-#		self.cursor.execute(sql_delete)
+	def check_hash(self):
+		sql_delete='DELETE t1 FROM hash_db t1 INNER JOIN hash_db t2 WHERE t1.id<t2.id AND t1.hash = t2.hash AND t1.drosiba=t2.drosiba AND t1.VT_hash_link=t2.VT_hash_link'
+		self.cursor.execute(sql_delete)
 	def check_dom(self):
 		dom_delete='DELETE t1 FROM domain_db t1 INNER JOIN domain_db t2 WHERE t1.id<t2.id AND t1.domens = t2.domens AND t1.VT_link=t2.VT_link'
 		self.cursor.execute(dom_delete)
@@ -41,6 +41,10 @@ class Database:
 		self.cursor.execute('DELETE FROM IP_mysql')
 
 #Function group used for inserting data into tables
+	def insert_hash(self, hash_loop, hash_dros, VT_hash):
+		SQL_i_hash='INSERT INTO hash_db(hash, drosiba, VT_hash_link) VALUES(%s, %s, %s)'
+		sql_v_hash=[(hash_loop, hash_dros, VT_hash)]
+		self.cursor.executemany(SQL_i_hash, sql_v_hash)
 	def insert_dom(self, dom_loop, dom_IP, VT_link):
 		SQL_i='INSERT INTO domain_db(domens, IP, VT_link) VALUES(%s, %s, %s)'
 		sql_v=[(dom_loop, dom_IP, VT_link)]
@@ -53,6 +57,10 @@ class Database:
 #Function group used for selecting the tables and it's values for output
 	def IP_select(self):
 		self.cursor.execute('SELECT * FROM IP_mysql')
+		select=self.cursor.fetchall()
+		return select
+	def hash_select(self):
+		self.cursor.execute('SELECT * FROM hash_db')
 		select=self.cursor.fetchall()
 		return select
 	def dom_select(self):
@@ -102,10 +110,13 @@ def ip_insert():
 				error = "tukšs lauks, lūdzu ievadiet derīgu jaucējvērtību"
 			else:
 				info_hash=functions.hash_lookup(hash)
+				print(info_hash)
 				for hash_loop in info_hash:
 					data_hash=info_hash[hash_loop]
 					hash_dros=data_hash['drosiba']
 					VT_hash=data_hash['VT_hash']
+					conn.insert_hash(hash_loop, hash_dros, VT_hash)
+				conn.check_hash()
 				hash_data_out=conn.hash_select()
 				return render_template(rezins, hash_data=hash_data_out)
 		if radio_option == "domain-lookup-v":

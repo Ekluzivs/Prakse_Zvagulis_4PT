@@ -1,7 +1,9 @@
 from flask import Flask
+import requests as req
 import re
 import subprocess as su
 import validators
+import json
 #creates a pattern for whitespace
 patterna="\s+"
 # Function group used for checking whether or not the data the user has inputted is valid
@@ -31,18 +33,33 @@ def check(IPs):
 			return False
 	return True
 
-#def hash_lookup(hash):
-#	hash=[I.strip() for I in hash.split(",")]
-#	hash_dict={}
-#	for hashs in hash:
-#		vai_hash_ir=re.findall(patterna, hashs)
-#		if any(hash_ir.isspace() for hash_ir in vai_hash_ir):
-#			hash_dict[hashs]={'drosiba': 'Atstarpe eksistē starp divām vai vairākām ievadēm, lūdzu ievadiet komatu(s)', 'VT_hash': "N/A"}
-#		else:
-
-
-
-
+def hash_lookup(hash):
+	hash=[I.strip() for I in hash.split(",")]
+	hash_dict={}
+	for hashs in hash:
+		vai_hash_ir=re.findall(patterna, hashs)
+		if any(hash_ir.isspace() for hash_ir in vai_hash_ir):
+			hash_dict[hashs]={'drosiba': 'Atstarpe eksistē starp divām vai vairākām ievadēm, lūdzu ievadiet komatu(s)', 'VT_hash': "N/A"}
+		elif len(hashs) != 32 and len(hashs) != 40 and len(hashs) != 64:
+			hash_dict[hashs]={'drosiba': 'Ievade nav jaucējvērtība (MD5, SHA-1, SHA-256)', 'VT_hash': "N/A"}
+		else:
+			url_hyper="https://www.virustotal.com/gui/file/"+hashs
+			url="https://www.virustotal.com/api/v3/files/"+hashs
+			headers={
+				"accept": "application/json",
+				"x-apikey": "001e6e4cca586655d6f9e36dcb8338115c61f47e39a48fbea08500ddefd25035"
+			}
+			get_data=req.get(url, headers=headers)
+			data=get_data.json()
+			if re.search("NotFoundError", get_data.text) or re.search("BadRequestError", get_data.text):
+				hash_dict[hashs]={'drosiba': "Nav informācijas", 'VT_hash': "N\A"}
+			else:
+				malicious=data["data"]["attributes"]["last_analysis_stats"]["malicious"]
+				if malicious > 0:
+					hash_dict[hashs]={'drosiba': "Jaucējvērtība nav droša", 'VT_hash': url_hyper}
+				else:
+					hash_dict[hashs]={'drosiba': "Jaucējvērtība ir droša", 'VT_hash': url_hyper}
+	return hash_dict
 
 
 def lookup(IP):
