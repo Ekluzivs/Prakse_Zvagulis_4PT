@@ -75,6 +75,7 @@ rezins='ip-lookup.html'
 def ip_insert():
 	#create an error variable for error messages
 	error = None
+	warning=None
 	global conn
 	#create necessary dictionaries, 1 dictionary for inputting data to mysql, 1 dictionary for outputting data to front-end
 	data={}
@@ -109,8 +110,9 @@ def ip_insert():
 			if not hash:
 				error = "tukšs lauks, lūdzu ievadiet derīgu jaucējvērtību"
 			else:
-				info_hash=functions.hash_lookup(hash)
-				print(info_hash)
+				info_hash, flagged_Hash=functions.hash_lookup(hash)
+				if flagged_Hash:
+                                        warning="Kļūda ievadītajā indikatorā"
 				for hash_loop in info_hash:
 					data_hash=info_hash[hash_loop]
 					hash_dros=data_hash['drosiba']
@@ -118,7 +120,7 @@ def ip_insert():
 					conn.insert_hash(hash_loop, hash_dros, VT_hash)
 				conn.check_hash()
 				hash_data_out=conn.hash_select()
-				return render_template(rezins, hash_data=hash_data_out)
+				return render_template(rezins, hash_data=hash_data_out, error=error ,zinojums=warning)
 		if radio_option == "domain-lookup-v":
 			if not dom:
 				error = "Tukšs lauks, lūdzu ievadiet derīgu domēnu"
@@ -128,7 +130,10 @@ def ip_insert():
 				data_dom.clear()
 				dom_data_out.clear()
 			else:
-				info_dom=functions.dom_lookup(dom)
+				info_dom, flagged_Dom=functions.dom_lookup(dom)
+				print(flagged_Dom)
+				if flagged_Dom:
+					warning="Kļūda ievadītajā indikatorā"
 				for dom_loop in info_dom:
 					data_dom=info_dom[dom_loop]
 					dom_IP=data_dom['IP']
@@ -136,7 +141,8 @@ def ip_insert():
 					conn.insert_dom(dom_loop, dom_IP, VT_link)
 				conn.check_dom()
 				dom_data_out=conn.dom_select()
-				return render_template(rezins, dom_data=dom_data_out)
+				print(warning)
+				return render_template(rezins, dom_data=dom_data_out, error=error, zinojums=warning)
 		elif radio_option=="ip-lookup-v":
 			if not IP:
 				error = "Tukšs lauks, lūdzu ievadiet derīgu IPv4 adresi"
@@ -148,7 +154,9 @@ def ip_insert():
 				return render_template(rezins)
 			else:
 			#sends IP data to backend python file, depending on the result, it will be returned to ip-lookup.html
-				info=functions.lookup(IP)
+				info, flagged_IP=functions.lookup(IP)
+				if flagged_IP:
+					warning="Kļūda ievadītajā indikatorā"
 				for ip in info:
 					data=info[ip]
 					ISP=data['ISPI']
@@ -157,8 +165,17 @@ def ip_insert():
 				conn.check_IP()
 				data_out=conn.IP_select()
 				print(data_out)
-				return render_template(rezins, look=data_out)
+				return render_template(rezins, look=data_out, error=error, zinojums=warning)
 	return render_template(rezins, error=error)
+#@app.route('/ip-lookup', methods=["GET", "POST"])
+#def user_input():
+#	if request.method
+
+
+
+
+
+
 #This starts the development server, checking whether the module is being run as the main program
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=5000)

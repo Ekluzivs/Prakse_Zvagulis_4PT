@@ -1,8 +1,8 @@
 {% extends "lajouts.html" %}
 {% block body %}
 	<div class="container mt-5">
-	{% if error and not clear_btn %}
-		<p class="text-danger d-flex justify-content-center" style="font-size: 20px"><strong>Error:</strong> {{ error }}
+	{% if error %}
+		<p class="text-danger d-flex justify-content-center" style="font-size: 20px"><strong>Error:</strong>&nbsp{{ error }}
 	{% endif %}
         <form method=post id="formats">
         	<dl>
@@ -18,15 +18,18 @@
                                 <input class="form-control border-secondary" id="hashid" type=textarea placeholder="8743b52063cd84097a65d1633f5c74f5" name=hesh value="{{ request.form.hesh }}">
                                 <label for="hashid">Jaucējvērtība</label>
                         </div>
+	{% if zinojums %}
+		<p class="text-danger d-flex justify-content-center" style="font-size: 16px; margin-bottom: 6px;"><strong>Problēma:</strong>&nbsp{{ zinojums }}</p>
+	{% endif %}
+	<div style="display: flex;">
 		<button class="btn bg-dark-subtle border-secondary" type=submit><strong>Iesniegt</strong></button>
-		<button class="btn bg-dark-subtle border-secondary" type=submit name="clear_btn" onclick="clearForm()"><strong>Dzēst</strong></button>
-		</dl>
+		<button class="btn bg-dark-subtle border-secondary" type="button" name="clear_btn" onclick="clearForm()"><strong>Dzēst</strong></button>
+	</dl>
 	<script>
 		function clearForm() {
 			document.getElementById("floatid").value="";
 			document.getElementById("labelid").value="";
 			document.getElementById("hashid").value="";
-			document.getElementById("formats").submit();
 			location.href = location.href;
 		}
 	</script>
@@ -40,7 +43,7 @@
 		<label class="form-check-label" for="Radioinput2">Domēna uzmeklēšana</label>
 	</div>
         <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Radioinput" id="Radioinput3" value="hash-lookup-v" {% if request.form.Radioinput == "hash-input-v" %}checked{% endif %}>
+                <input class="form-check-input" type="radio" name="Radioinput" id="Radioinput3" value="hash-lookup-v" {% if request.form.Radioinput == "hash-lookup-v" %}checked{% endif %}>
                 <label class="form-check-label" for="Radioinput3">jaucējvērtību uzmeklēšana (WIP)</label>
         </div>
 	</form>
@@ -78,10 +81,10 @@
                                 hashtable.style.display="table"
                         }
                 }
-                document.getElementById("Radioinput1").addEventListener("change", radiooption);
-                document.getElementById("Radioinput2").addEventListener("change", radiooption);
+		document.getElementById("Radioinput1").addEventListener("change", radiooption);
+		document.getElementById("Radioinput2").addEventListener("change", radiooption);
 		document.getElementById("Radioinput3").addEventListener("change", radiooption);
-		radiooption();
+                radiooption();
         </script>
 	<div>
 	</br>

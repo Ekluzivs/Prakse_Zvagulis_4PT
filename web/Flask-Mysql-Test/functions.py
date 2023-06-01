@@ -36,12 +36,17 @@ def check(IPs):
 def hash_lookup(hash):
 	hash=[I.strip() for I in hash.split(",")]
 	hash_dict={}
+	flagged_Hash=[]
 	for hashs in hash:
 		vai_hash_ir=re.findall(patterna, hashs)
 		if any(hash_ir.isspace() for hash_ir in vai_hash_ir):
-			hash_dict[hashs]={'drosiba': 'Atstarpe eksistē starp divām vai vairākām ievadēm, lūdzu ievadiet komatu(s)', 'VT_hash': "N/A"}
+#			hash_dict[hashs]={'drosiba': 'Atstarpe eksistē starp divām vai vairākām ievadēm, lūdzu ievadiet komatu(s)', 'VT_hash': "N/A"}
+			flagged_Hash.append(hashs)
+			continue
 		elif len(hashs) != 32 and len(hashs) != 40 and len(hashs) != 64:
-			hash_dict[hashs]={'drosiba': 'Ievade nav jaucējvērtība (MD5, SHA-1, SHA-256)', 'VT_hash': "N/A"}
+#			hash_dict[hashs]={'drosiba': 'Ievade nav jaucējvērtība (MD5, SHA-1, SHA-256)', 'VT_hash': "N/A"}
+			flagged_Hash.append(hashs)
+			continue
 		else:
 			url_hyper="https://www.virustotal.com/gui/file/"+hashs
 			url="https://www.virustotal.com/api/v3/files/"+hashs
@@ -59,24 +64,29 @@ def hash_lookup(hash):
 					hash_dict[hashs]={'drosiba': "Jaucējvērtība nav droša", 'VT_hash': url_hyper}
 				else:
 					hash_dict[hashs]={'drosiba': "Jaucējvērtība ir droša", 'VT_hash': url_hyper}
-	return hash_dict
+	return hash_dict, flagged_Hash
 
 
 def lookup(IP):
 	#in this loop cycle, it removes all commas if exists and whitespaces
 	IP=[I.strip() for I in IP.split(",")]
 	d={}
+	flagged_IP=[]
 	#the first if statement checks each IP address, if there exists IP addresses with a whitespace, then Error message will appear
 	for IPs in IP:
 		print(IPs)
 		vai_ir=re.findall(patterna, IPs)
 		if any(ir.isspace() for ir in vai_ir):
-			d[IPs]={'ISPI':"Atstarpe eksistē starp divām vai vairākām ievadēm, lūdzu ievadiet komatu(s)", 'country': "N/A"}
+#			d[IPs]={'ISPI':"Atstarpe eksistē starp divām vai vairākām ievadēm, lūdzu ievadiet komatu(s)", 'country': "N/A"}
+			flagged_IP.append(IPs)
+			continue
 		else:
 			#gathers information from check function if the IP address is a valid IPv4 address
 			checked=check(IPs)
 			if checked==False:
-				d[IPs]={'ISPI':"Nav derīga IPv4 adrese", 'country': "N/A"}
+#				d[IPs]={'ISPI':"Nav derīga IPv4 adrese", 'country': "N/A"}
+				flagged_IP.append(IPs)
+				continue
 			else:
 				#getwhois gathers ASN information from IPv4 address, whoispopen stores it in a "file" which then decodes it and reads the information
 				#output variable replaces all the whoispopen variable with empty
@@ -99,19 +109,22 @@ def lookup(IP):
 					ISP=spliteris.split(", ")[0]
 					valsts=output[-2:]
 					d[IPs]={'ISPI':ISP, 'country': valsts}
-	return d
+	return d, flagged_IP
 
 def dom_lookup(dom):
 	dom=[I.strip() for I in dom.split(",")]
 	dom_dict={}
+	flagged_Dom=[]
 	for doms in dom:
 		vai_dom_ir=re.findall(patterna, doms)
 		if any(ir_doms.isspace() for ir_doms in vai_dom_ir):
-			dom_dict[doms]={'IP': "Atstarpe starp divām vai vairākām domēnām, lūdzu ievadiet komatu(s)", 'VT-LINK': "N/A"}
+#			dom_dict[doms]={'IP': "Atstarpe starp divām vai vairākām domēnām, lūdzu ievadiet komatu(s)", 'VT-LINK': "N/A"}
+			flagged_Dom.append(doms)
 		else:
 			checked_dom=check_dom(doms)
 			if checked_dom == False:
-				dom_dict[doms]={'IP':"Nav derīga domēnu adrese", 'VT-LINK': "N/A"}
+#				dom_dict[doms]={'IP':"Nav derīga domēnu adrese", 'VT-LINK': "N/A"}
+				flagged_Dom.append(doms)
 			else:
 				getdomain=['dig','+short', doms]
 				doms_popen=su.Popen(getdomain, stdout=su.PIPE)
@@ -122,4 +135,4 @@ def dom_lookup(dom):
 				else:
 					link="https://www.virustotal.com/gui/domain/"+doms
 					dom_dict[doms]={'IP': output, 'VT-LINK': link}
-	return dom_dict
+	return dom_dict, flagged_Dom
