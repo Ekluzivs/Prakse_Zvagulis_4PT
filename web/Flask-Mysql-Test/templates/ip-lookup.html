@@ -18,6 +18,10 @@
                                 <input class="form-control border-secondary" id="hashid" type=textarea placeholder="8743b52063cd84097a65d1633f5c74f5" name=hesh value="{{ request.form.hesh }}">
                                 <label for="hashid">Jaucējvērtība</label>
                         </div>
+			<div class="form-floating mb-2" id="IPs-input-f" style="display:none">
+                                <input class="form-control border-secondary" id="IPsid" type=textarea placeholder="8743b52063cd84097a65d1633f5c74f5" name=IP_s value="{{ request.form.IP_s }}">
+                                <label for="hashid">IP adrese</label>
+                        </div>
 	{% if zinojums %}
 		<p class="text-danger d-flex justify-content-center" style="font-size: 16px; margin-bottom: 6px;"><strong>Problēma:</strong>&nbsp{{ zinojums }}</p>
 	{% endif %}
@@ -30,6 +34,7 @@
 			document.getElementById("floatid").value="";
 			document.getElementById("labelid").value="";
 			document.getElementById("hashid").value="";
+			document.getElementById("IPsid").value="";
 			location.href = location.href;
 		}
 	</script>
@@ -44,7 +49,11 @@
 	</div>
         <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="Radioinput" id="Radioinput3" value="hash-lookup-v" {% if request.form.Radioinput == "hash-lookup-v" %}checked{% endif %}>
-                <label class="form-check-label" for="Radioinput3">jaucējvērtību uzmeklēšana (WIP)</label>
+                <label class="form-check-label" for="Radioinput3">Jaucējvērtību uzmeklēšana</label>
+        </div>
+	<div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="Radioinput" id="Radioinput4" value="IPs-lookup-v" {% if request.form.Radioinput == "IPs-lookup-v" %}checked{% endif %}>
+                <label class="form-check-label" for="Radioinput4">IP drošības pārbaude</label>
         </div>
 	</form>
 	</div>
@@ -53,37 +62,55 @@
                         var ipinput = document.getElementById("IP-input-f");
                         var domaininput = document.getElementById("domain-input-f");
 			var hashinput = document.getElementById("hash-input-f");
+			var IPS = document.getElementById("IPs-input-f");
 
 			var hashtable = document.getElementById("hash-id-table");
                         var iptable = document.getElementById("IP-id-table");
                         var domtable = document.getElementById("domain-id-table");
+			var ipstable = document.getElementById("IPs-id-table");
 
                         if(document.getElementById("Radioinput1").checked) {
                                 ipinput.style.display="block";
                                 domaininput.style.display="none";
 				hashinput.style.display="none";
+				IPS.style.display="none";
                                 iptable.style.display="table";
                                 domtable.style.display="none";
 				hashtable.style.display="none";
+				ipstable.style.display="none";
                         }else if (document.getElementById("Radioinput2").checked) {
                                 ipinput.style.display="none";
                                 domaininput.style.display="block";
-				hashinput.style.display="none"
+				hashinput.style.display="none";
+				IPS.style.display="none";
                                 iptable.style.display="none";
                                 domtable.style.display="table";
 				hashtable.style.display="none"
+				ipstable.style.display="none";
                         }else if (document.getElementById("Radioinput3").checked) {
                                 ipinput.style.display="none";
                                 domaininput.style.display="none";
-                                hashinput.style.display="block"
+                                hashinput.style.display="block";
+				IPS.style.display="none";
                                 iptable.style.display="none";
                                 domtable.style.display="none";
-                                hashtable.style.display="table"
+                                hashtable.style.display="table";
+				ipstable.style.display="none";
+                        }else if (document.getElementById("Radioinput4").checked) {
+                                ipinput.style.display="none";
+                                domaininput.style.display="none";
+                                hashinput.style.display="none";
+				IPS.style.display="block";
+                                iptable.style.display="none";
+                                domtable.style.display="none";
+                                hashtable.style.display="none";
+				ipstable.style.display="table";
                         }
                 }
 		document.getElementById("Radioinput1").addEventListener("change", radiooption);
 		document.getElementById("Radioinput2").addEventListener("change", radiooption);
 		document.getElementById("Radioinput3").addEventListener("change", radiooption);
+		document.getElementById("Radioinput4").addEventListener("change", radiooption);
                 radiooption();
         </script>
 	<div>
@@ -193,6 +220,35 @@
                                         <td style="text-align:center">{{ value[3] }}</td>
                                 </tr>
                         {% elif "Ievade" in value[2] %}
+                                <tr class="table border-dark" style="background-color:rgb(247,221,161)">
+                                        <td>{{ value[1] }}</td>
+                                        <td style="text-align:center">{{ value[2] }}</td>
+                                        <td style="text-align:center">{{ value[3] }}</td>
+                                </tr>
+                        {% else %}
+                        <tr>
+                        <td>{{ value[1] }}</td>
+                        <td style="text-align:center">{{ value[2] }}</td>
+                        <td style="text-align:center">
+                                <a href="{{ value[3] }}" target="_blank">VT saite</a></td>
+                        </tr>
+                        {% endif %}
+                {% endfor %}
+                </tbody>
+                </table>
+        </div>
+        {% endif %}
+	{% if IP_s_data %}
+        <div class="container">
+                <table class="table table-bordered border-dark" id="IPs-id-table">
+                <thead>
+                        <th class="bg-dark-subtle">Jaucējvērtība</th>
+                        <th class="bg-dark-subtle" style="text-align:center">Drošība</th>
+                        <th class="bg-dark-subtle" style="text-align:center">Virus Total</th>
+                </thead>
+                <tbody>
+                {% for value in IP_s_data %}
+                        {% if "informācijas" in value[2] %}
                                 <tr class="table border-dark" style="background-color:rgb(247,221,161)">
                                         <td>{{ value[1] }}</td>
                                         <td style="text-align:center">{{ value[2] }}</td>

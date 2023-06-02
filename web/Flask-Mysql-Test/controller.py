@@ -33,6 +33,9 @@ class Database:
 	def check_IP(self):
 		sql_delete='DELETE t1 FROM IP_mysql t1 INNER JOIN IP_mysql t2 WHERE t1.id<t2.id AND t1.IP_key = t2.IP_key AND t1.ISP=t2.ISP AND t1.valsts=t2.valsts'
 		self.cursor.execute(sql_delete)
+	def check_IPs(self):
+		sql_delete='DELETE t1 FROM IP_safe_db t1 INNER JOIN IP_safe_db t2 WHERE t1.id<t2.id AND t1.IP_s_key = t2.IP_s_key AND t1.IP_drosiba=t2.IP_drosiba AND t1.VT_IP_link=t2.VT_IP_link'
+		self.cursor.execute(sql_delete)
 #Function group that is used for deleting any and all data in tables
 # NOTE!!! CURRENTLY THIS ISN'T WORKING FOR REASONS UNKNOWN
 	def drop_domain(self):
@@ -53,7 +56,10 @@ class Database:
 		sql_insert='INSERT INTO IP_mysql(IP_key, ISP, valsts) VALUES(%s,%s,%s)'
 		sql_values=[(IPs, ISP, country)]
 		self.cursor.executemany(sql_insert, sql_values)
-
+	def insert_IP_s(self, IP_s_loop, IP_dros, VTIP_link):
+		sql_insert='INSERT INTO IP_safe_db(IP_s_key, IP_drosiba, VT_IP_link) VALUES(%s,%s,%s)'
+		sql_values=[(IP_s_loop, IP_dros, VTIP_link)]
+		self.cursor.executemany(sql_insert, sql_values)
 #Function group used for selecting the tables and it's values for output
 	def IP_select(self):
 		self.cursor.execute('SELECT * FROM IP_mysql')
@@ -67,6 +73,11 @@ class Database:
 		self.cursor.execute('SELECT * FROM domain_db')
 		select1=self.cursor.fetchall()
 		return select1
+	def IP_s_select(self):
+		self.cursor.execute('SELECT * FROM IP_safe_db')
+		select1=self.cursor.fetchall()
+		return select1
+
 @app.route('/')
 def index():
 	return render_template('index.html')
@@ -84,11 +95,14 @@ def ip_insert():
 	dom_data_out={}
 	data_hash={}
 	hash_data_out={}
+	data_IP_s={}
+	IPs_data_out={}
 	#create list for creating tables in Database class
 	list=[
 		["IP_mysql", "id","IP_key","ISP","valsts"],
 		["domain_db","id","domens","IP","VT_link"],
-		["hash_db", "id","hash","drosiba","VT_hash_link"]
+		["hash_db", "id","hash","drosiba","VT_hash_link"],
+		["IP_safe_db","id","IP_s_key", "IP_drosiba", "VT_IP_link"]
 	]
 	#if no connection, it'll create a Database class and then over each iteration it'll create a table
 	if not conn:
@@ -106,6 +120,22 @@ def ip_insert():
 		IP=request.form['AiPe']
 		dom=request.form['domain']
 		hash=request.form['hesh']
+		IP_safe=request.form['IP_s']
+		if radio_option == "IPs-lookup-v":
+                        if not IP_safe:
+                                error = "tukšs lauks, lūdzu ievadiet derīgu jaucējvērtību"
+                        else:
+                                info_IP_s, flagged_IP_s=functions.IPs_lookup(IP_safe)
+                                if flagged_IP_s:
+                                        warning="Kļūda ievadītajā indikatorā"
+                                for IP_s_loop in info_IP_s:
+                                        data_IP_s=info_IP_s[IP_s_loop]
+                                        IP_dros=data_IP_s['IP_issafe']
+                                        VTIP_link=data_IP_s['VT_IP']
+                                        conn.insert_IP_s(IP_s_loop, IP_dros, VTIP_link)
+                                conn.check_IPs()
+                                IPs_data_out=conn.IP_s_select()
+                                return render_template(rezins, IP_s_data=IPs_data_out, error=error ,zinojums=warning)
 		if radio_option == "hash-lookup-v":
 			if not hash:
 				error = "tukšs lauks, lūdzu ievadiet derīgu jaucējvērtību"
@@ -140,9 +170,9 @@ def ip_insert():
 					VT_link=data_dom['VT-LINK']
 					conn.insert_dom(dom_loop, dom_IP, VT_link)
 				conn.check_dom()
-				dom_data_out=conn.dom_select()
+				data_out=conn.dom_select()
 				print(warning)
-				return render_template(rezins, dom_data=dom_data_out, error=error, zinojums=warning)
+				return render_template(rezins, dom_data_out=dom_data_out, error=error, zinojums=warning)
 		elif radio_option=="ip-lookup-v":
 			if not IP:
 				error = "Tukšs lauks, lūdzu ievadiet derīgu IPv4 adresi"

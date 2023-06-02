@@ -66,6 +66,40 @@ def hash_lookup(hash):
 					hash_dict[hashs]={'drosiba': "Jaucējvērtība ir droša", 'VT_hash': url_hyper}
 	return hash_dict, flagged_Hash
 
+def IPs_lookup(IP_safe):
+	IP_safe=[I.strip() for I in IP_safe.split(",")]
+	IP_dict={}
+	flagged_IP_s=[]
+	for IPss in IP_safe:
+		IPs=IPss
+		vai_IPss_ir=re.findall(patterna, IPss)
+		if any(IP_ir.isspace() for IP_ir in vai_IPss_ir):
+			flagged_IP_s.append(IPss)
+			continue
+		else:
+			checked=check(IPs)
+			if checked==False:
+				flagged_IP_s.append(IPss)
+				continue
+			else:
+				url_hyper="https://www.virustotal.com/gui/file/"+IPss
+				url="https://www.virustotal.com/api/v3/ip_addresses/"+IPss
+				headers={
+					"accept": "application/json",
+					"x-apikey": "001e6e4cca586655d6f9e36dcb8338115c61f47e39a48fbea08500ddefd25035"
+				}
+				get_data=req.get(url, headers=headers)
+				data=get_data.json()
+				if re.search("NotFoundError", get_data.text) or re.search("BadRequestError", get_data.text):
+					IP_dict[IPss]={'IP_issafe': "Nav informācijas", 'VT_IP': "N\A"}
+				else:
+					malicious=data["data"]["attributes"]["last_analysis_stats"]["malicious"]
+					if malicious > 0:
+						IP_dict[IPss]={'IP_issafe': "IP adrese, iespējams, nav droša", 'VT_IP': url_hyper}
+					else:
+						IP_dict[IPss]={'IP_issafe': "IP adrese ir droša", 'VT_IP': url_hyper}
+	return IP_dict, flagged_IP_s
+
 
 def lookup(IP):
 	#in this loop cycle, it removes all commas if exists and whitespaces
