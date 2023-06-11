@@ -5,8 +5,9 @@ import mysql.connector
 app=Flask(__name__, template_folder='templates')
 conn=None
 #Further note, the issue of why the database was not working, because the database wasn't created, apparently the database has to created before launching the docker-compose command
-#to create database: docker exec -it (container-id) bash
-#mysql -u root -p (after which you enter the password that is on the python file)
+#to create database:
+#docker exec -it (container-id) bash
+#mysql -u root -p (after which you enter the password in this case "Parole1")
 #CREATE DATABASE (database name on python file, i.e. testingtesting123);
 #exit; and then run the docker-compose up command
 
@@ -115,67 +116,91 @@ def ip_insert():
 			s4=lst[4]
 			conn.create_table(table_name, s1,s2,s3,s4)
 	if request.method == "POST":
-		#AiPe is a variable that gathers information from the user input, if the input is empty, an error message will appear
+		#IP, Dom, hash, IP_safe are the variables, they're getting the input data from the front-end with the help of Jinja
+		#radio option is the variable that checks what option has been selected
 		radio_option=request.form.get('Radioinput')
 		IP=request.form['AiPe']
 		dom=request.form['domain']
 		hash=request.form['hesh']
 		IP_safe=request.form['IP_s']
+		#if radio_option has been selected to lookup 'IP parbaude', then this statement will activate
 		if radio_option == "IPs-lookup-v":
+			#checks whether the user has inputted any data in the input field
                         if not IP_safe:
-                                error = "tukšs lauks, lūdzu ievadiet derīgu jaucējvērtību"
+                                error = "tukšs lauks, lūdzu ievadiet derīgu IPv4 adresi"
                         else:
+				#information is sent to the back-end, info_IP_s gathers that information, flagged_IP_s is a check for any failed inputs
                                 info_IP_s, flagged_IP_s=functions.IPs_lookup(IP_safe)
+				#if flagged_IP_s is not null, then it'll output a warning to front-end
                                 if flagged_IP_s:
                                         warning="Kļūda ievadītajā indikatorā"
+				#over each iteration, the data is being inserted into the MySQL database tables
                                 for IP_s_loop in info_IP_s:
                                         data_IP_s=info_IP_s[IP_s_loop]
                                         IP_dros=data_IP_s['IP_issafe']
                                         VTIP_link=data_IP_s['VT_IP']
                                         conn.insert_IP_s(IP_s_loop, IP_dros, VTIP_link)
+				#check_IPs is the function that deletes any existing duplicates
                                 conn.check_IPs()
+				#this line selects the table from the database and sends that data to the output
                                 IPs_data_out=conn.IP_s_select()
                                 return render_template(rezins, IP_s_data=IPs_data_out, error=error ,zinojums=warning)
+		#if radio_option has been selected to lookup 'jaucejvertibu uzmeklesana', then this statement will activate
 		if radio_option == "hash-lookup-v":
+			#checks whether or not the data inputted and submitted is empty
 			if not hash:
 				error = "tukšs lauks, lūdzu ievadiet derīgu jaucējvērtību"
 			else:
+				#information is sent to the back-end, info_hash gathers that information from the back-end, flagged_hash holds any false inputs
 				info_hash, flagged_Hash=functions.hash_lookup(hash)
+				#checks whether flagged_hash is not empty, if isn't, warning message will be printed out
 				if flagged_Hash:
                                         warning="Kļūda ievadītajā indikatorā"
+				#over each iteration, data gathered from the input will be inserted into the database table
 				for hash_loop in info_hash:
 					data_hash=info_hash[hash_loop]
 					hash_dros=data_hash['drosiba']
 					VT_hash=data_hash['VT_hash']
 					conn.insert_hash(hash_loop, hash_dros, VT_hash)
+				#deletes any duplicates
 				conn.check_hash()
+				#selects the data and outputs it to the front-end
 				hash_data_out=conn.hash_select()
 				return render_template(rezins, hash_data=hash_data_out, error=error ,zinojums=warning)
+		#if radio_option has been selected to lookup "domenu uzmeklesana", then this statement will activate
 		if radio_option == "domain-lookup-v":
+			#check statement, checks whether the input is empty or not
 			if not dom:
 				error = "Tukšs lauks, lūdzu ievadiet derīgu domēnu"
+			#supposed to delete the table and the input field, currently problems with it
 			elif request.form.get('clear_btn') is not None:
 				if conn:
 					conn.drop_domain()
 				data_dom.clear()
 				dom_data_out.clear()
 			else:
+				#information is sent and info_dom gathers that information, flagged_dom holds the count for any failed inputs
 				info_dom, flagged_Dom=functions.dom_lookup(dom)
-				print(flagged_Dom)
+				#if flagged_Dom is not null, then it'll output a warning to the front-end
 				if flagged_Dom:
 					warning="Kļūda ievadītajā indikatorā"
+				#over each iteration of inputs, the inputs will be inserted into the table
 				for dom_loop in info_dom:
 					data_dom=info_dom[dom_loop]
 					dom_IP=data_dom['IP']
 					VT_link=data_dom['VT-LINK']
 					conn.insert_dom(dom_loop, dom_IP, VT_link)
+				#deletes any duplicates
 				conn.check_dom()
-				data_out=conn.dom_select()
-				print(warning)
-				return render_template(rezins, dom_data_out=dom_data_out, error=error, zinojums=warning)
+				#dom_data_out outputs the data to the front-end
+				dom_data_out=conn.dom_select()
+				return render_template(rezins, dom_data=dom_data_out, error=error, zinojums=warning)
+		#if radio_option has been selected to lookup 'IP uzmeklesana', then this statement will activate
 		elif radio_option=="ip-lookup-v":
+			#checks whether the input is empty or not, if true, error message will be outputted
 			if not IP:
 				error = "Tukšs lauks, lūdzu ievadiet derīgu IPv4 adresi"
+			#supposed to clear the input and table
 			elif request.form.get('clear_btn') is not None:
 				if conn:
 					conn.drop_table()
@@ -183,29 +208,23 @@ def ip_insert():
 				data.clear()
 				return render_template(rezins)
 			else:
-			#sends IP data to backend python file, depending on the result, it will be returned to ip-lookup.html
+			#information is sent to functions, info gathers the returned information, flagged_IP checks how many failed inputs there are
 				info, flagged_IP=functions.lookup(IP)
+				#If flagged_IP is not null, then warning message will be outputted
 				if flagged_IP:
 					warning="Kļūda ievadītajā indikatorā"
+				#over each iteration the information gathered will be inserted into database tables
 				for ip in info:
 					data=info[ip]
 					ISP=data['ISPI']
 					country=data['country']
 					conn.insert_IP(ip, ISP, country)
+				#deletes duplicates
 				conn.check_IP()
+				#selects the database table
 				data_out=conn.IP_select()
-				print(data_out)
 				return render_template(rezins, look=data_out, error=error, zinojums=warning)
 	return render_template(rezins, error=error)
-#@app.route('/ip-lookup', methods=["GET", "POST"])
-#def user_input():
-#	if request.method
-
-
-
-
-
-
 #This starts the development server, checking whether the module is being run as the main program
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=5000)
