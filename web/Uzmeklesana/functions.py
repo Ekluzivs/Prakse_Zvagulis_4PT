@@ -125,14 +125,12 @@ def lookup(IP):
 		print(IPs)
 		vai_ir=re.findall(patterna, IPs)
 		if any(ir.isspace() for ir in vai_ir):
-#			d[IPs]={'ISPI':"Atstarpe eksistē starp divām vai vairākām ievadēm, lūdzu ievadiet komatu(s)", 'country': "N/A"}
 			flagged_IP.append(IPs)
 			continue
 		else:
 			#gathers information from check function if the IP address is a valid IPv4 address
 			checked=check(IPs)
 			if checked==False:
-#				d[IPs]={'ISPI':"Nav derīga IPv4 adrese", 'country': "N/A"}
 				flagged_IP.append(IPs)
 				continue
 			else:
