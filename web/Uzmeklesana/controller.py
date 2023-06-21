@@ -79,9 +79,6 @@ class Database:
 		select1=self.cursor.fetchall()
 		return select1
 
-@app.route('/')
-def index():
-	return render_template('index.html')
 rezins='ip-lookup.html'
 @app.route('/ip-lookup', methods=["GET", "POST"])
 def ip_insert():
