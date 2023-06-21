@@ -4,7 +4,7 @@
 	{% if error %}
 		<p class="text-danger d-flex justify-content-center" style="font-size: 20px"><strong>Error:</strong>&nbsp{{ error }}
 	{% endif %}
-        <form method=post id="formats">
+        <form method=POST id="formats">
         	<dl>
 			<div class="form-floating mb-2" id="IP-input-f">
 				<input class="form-control border-secondary" id="floatid" type=textarea placeholder="1.1.1.1, 2.2.2.2" name="AiPe" value="{{ request.form.AiPe }}">
@@ -31,10 +31,7 @@
 	</dl>
 	<script>
 		function clearForm() {
-			document.getElementById("floatid").value="";
-			document.getElementById("labelid").value="";
-			document.getElementById("hashid").value="";
-			document.getElementById("IPsid").value="";
+			document.getElementById("formats").reset()
 			location.href = location.href;
 		}
 	</script>
